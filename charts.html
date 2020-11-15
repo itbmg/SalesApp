@@ -1,0 +1,1194 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Sales App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/demo.css">
+    <!-- Pushy CSS -->
+    <link rel="stylesheet" href="css/pushy.css">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="CustomCSS/custom.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link href="CustomCSS/font-awesome.css" rel="stylesheet" type="text/css" />
+    <!-- jQuery -->
+    <!-- Modernizr -->
+    <script src="js/jquery-1.7.1.min.js" type="text/javascript"></script>
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    <link href="css/homepage.css" rel="stylesheet" type="text/css" />
+    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+<script src="https://www.amcharts.com/lib/3/pie.js"></script>
+<script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+<link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css" type="text/css" media="all" />
+<script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+<script src="https://www.amcharts.com/lib/3/serial.js"></script>
+<div id="chartdiv"></div>
+    <script src="js/jquery.blockUI.js" type="text/javascript"></script>
+    <style type="text/css">
+        #mydiv
+        {
+            height: 400px;
+            position: relative;
+            background-color: #F8F9F9; /* for demonstration */
+        }
+        .ajax-loader
+        {
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            left: 50%;
+            top: 50%;
+            margin-left: -32px; /* -1 * image width / 2 */
+            margin-top: -32px; /* -1 * image height / 2 */
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            fillcsoroutes();
+            ddlTypeChange();
+            GetSalesTypes();
+            checkloginstatus();
+        });
+        function checkloginstatus() {
+            var data = { 'op': 'checkloginstatus' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "NotValid") {
+                        window.location = 'login.html';
+                    }
+                    else if (msg == "valid") {
+
+                    }
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            callHandler(data, s, e);
+        }
+        function callHandler(d, s, e) {
+            $.ajax({
+                url: 'Bus.axd',
+                data: d,
+                type: 'GET',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                async: true,
+                cache: true,
+                success: s,
+                error: e
+            });
+        }
+       
+        function CallHandlerUsingJson(d, s, e) {
+            $.ajax({
+                type: "GET",
+                url: "Bus.axd?json=",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(d),
+                async: true,
+                cache: true,
+                success: s,
+                error: e
+            });
+        }
+        
+        function logoutclick() {
+            var data = { 'op': 'log_out' };
+            var s = function (msg) {
+                if (msg == "Valid") {
+                    window.location = 'login.html';
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            callHandler(data, s, e);
+        }
+        function homeclick() {
+            window.location = "home.html";
+        }
+        function Indentclick() {
+            window.location = "Indent.html";
+        }
+        function Salesclick() {
+            window.location = "sales.html";
+        }
+        function dcclick() {
+            window.location = "dcreport.html";
+        }
+        function balanceclick() {
+            window.location = "balancerpt.html";
+        }
+        function lekageclick() {
+            window.location = "lekages.html";
+        }
+        function cratesclick() {
+            window.location = "crates.html";
+        }
+        function cashclick() {
+            window.location = "cashbook.html";
+        }
+        function approvalvoucherclick() {
+            window.location = "VoucherApproval.html";
+        }
+        var salesTypes = [];
+        function GetSalesTypes() {
+            var data = { 'op': 'updatesalestypemanage' };
+            var s = function (msg) {
+                if (msg) {
+                    salesTypes = msg;
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function GetClassificationtype() {
+            window.open = "Classification_linechart.aspx";
+        }
+        function ddlTypeChange() {
+            var ddlType = document.getElementById('ddlType').value;
+            if (ddlType == "Agent Wise") {
+                $('#divroute').css('display', 'table-row');
+                $('#divagent').css('display', 'table-row');
+            }
+            if (ddlType == "Route Wise") {
+                $('#divroute').css('display', 'table-row');
+                $('#divagent').css('display', 'none');
+            }
+            if (ddlType == "Sales Office Wise") {
+                $('#divroute').css('display', 'none');
+                $('#divagent').css('display', 'none');
+            }
+        }
+        function DetailsValidating() {
+            $("#example").empty();
+            $("#chart").empty();
+            var txtFromdate = document.getElementById('txtFromdate').value;
+            var txtTodate = document.getElementById('txtTodate').value;
+            if (txtFromdate == "") {
+                alert("Select start date");
+                return false;
+            }
+            if (txtTodate == "") {
+                alert("Select end date");
+                return false;
+            }
+            var ddlAgentName = document.getElementById('ddlAgentName').value;
+            var ddlRouteName = document.getElementById('ddlRouteName').value;
+            var ddlsalesoffice = document.getElementById('ddlsalesoffice').value;
+            var ddlType = document.getElementById('ddlType').value;
+            if (ddlType == "Agent Wise") {
+                if (ddlsalesoffice == "" || ddlsalesoffice == "Select Sales Office") {
+                    alert("Select Sales Offic name");
+                    return false;
+                }
+                if (ddlRouteName == "" || ddlRouteName == "Select Route Name") {
+                    alert("Select route name");
+                    return false;
+                }
+                if (ddlAgentName == "" || ddlAgentName == "Select Agent Name") {
+                    alert("Select agent name");
+                    return false;
+                }
+            }
+            if (ddlType == "Route Wise") {
+                if (ddlsalesoffice == "" || ddlsalesoffice == "Select Sales Office") {
+                    alert("Select Sales Offic name");
+                    return false;
+                }
+                if (ddlRouteName == "" || ddlRouteName == "Select Route Name") {
+                    alert("Select route name");
+                    return false;
+                }
+            }
+            if (ddlType == "Sales Office Wise") {
+                if (ddlsalesoffice == "" || ddlsalesoffice == "Select Sales Office") {
+                    alert("Select Sales Offic name");
+                    return false;
+                }
+            }
+            var ddldatatype = document.getElementById('ddldatatype').value;
+            var data = { 'op': 'GetLineChartValues', 'startDate': txtFromdate, 'endDate': txtTodate, 'AgentName': ddlAgentName, 'RouteName': ddlRouteName, 'SalesOffice': ddlsalesoffice, 'Type': ddlType, 'ddldatatype': ddldatatype };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location.assign("Login.aspx");
+                    }
+                    if (msg == "Please Select Monthly Wise") {
+                        alert(msg);
+                        return false;
+                    }
+                    else {
+                        createChart(msg);
+                        getPiechart();
+                        getduechartreport();
+                        getinventorychartreport();
+                        $('#divremarks').css('display', 'block');
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function getPiechart() {
+            var ddlsalesoffice = document.getElementById('ddlsalesoffice').value;
+            var txtFromdate = document.getElementById('txtFromdate').value;
+            var txtTodate = document.getElementById('txtTodate').value;
+            if (txtFromdate == "") {
+                alert("Select start date");
+                return false;
+            }
+            var ddlType = document.getElementById('ddlType').value;
+            var data = { 'op': 'GetPieChart_ClassificationType', 'startDate': txtFromdate, 'enddate': txtTodate, 'ddlsalesoffice': ddlsalesoffice, 'ddlType': ddlType };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location.assign("Login.aspx");
+                    }
+                    else {
+                        if (msg.length > 0) {
+                            createpieChart(msg);
+                        }
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function fillcsoroutes() {
+            var data = { 'op': 'GetCsodispatchRoutes' };
+            var s = function (msg) {
+                if (msg) {
+                    BindDispatchName(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function BindDispatchName(msg) {
+            document.getElementById('ddlsalesoffice').options.length = "";
+            var veh = document.getElementById('ddlsalesoffice');
+            var length = veh.options.length;
+            for (i = length - 1; i >= 0; i--) {
+                veh.options[i] = null;
+            }
+            var opt = document.createElement('option');
+            opt.innerHTML = "Select branchname";
+            opt.value = "";
+            veh.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i] != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].RouteName;
+                    opt.value = msg[i].rid;
+                    veh.appendChild(opt);
+                }
+            }
+        }
+        function ddlSalesOfficeChange() {
+            var BranchID = document.getElementById('ddlsalesoffice').value;
+            var data = { 'op': 'GetRouteNameclick', 'RouteID': BranchID };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "Login.aspx";
+                    }
+                    BindRouteName(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function BindRouteName(msg) {
+            document.getElementById('ddlRouteName').options.length = "";
+            var veh = document.getElementById('ddlRouteName');
+            var length = veh.options.length;
+            for (i = length - 1; i >= 0; i--) {
+                veh.options[i] = null;
+            }
+            var opt = document.createElement('option');
+            opt.innerHTML = "Select Route Name";
+            opt.value = "";
+            veh.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i] != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].RouteName;
+                    opt.value = msg[i].Route_id;
+                    veh.appendChild(opt);
+                }
+            }
+        }
+
+        function ddlRouteNameChange() {
+            FillAgentName();
+        }
+
+        function FillAgentName() {
+            var RouteID = document.getElementById('ddlRouteName').value;
+            var data = { 'op': 'GetAgents', 'RouteID': RouteID };
+            var s = function (msg) {
+                if (msg) {
+                    BindAgentName(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function BindAgentName(msg) {
+            document.getElementById('ddlAgentName').options.length = "";
+            var ddlAgentName = document.getElementById('ddlAgentName');
+            var length = ddlAgentName.options.length;
+            for (i = length - 1; i >= 0; i--) {
+                ddlAgentName.options[i] = null;
+            }
+            var opt = document.createElement('option');
+            opt.innerHTML = "Select Agent Name";
+            opt.value = "";
+            ddlAgentName.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i] != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].BranchName;
+                    opt.value = msg[i].routeid;
+                    ddlAgentName.appendChild(opt);
+                }
+            }
+        }
+        function GetTotalCal() {
+            document.getElementById('Kgsclass').innerHTML = "";
+            document.getElementById('ltrclass').innerHTML = "";
+            var totalltr = 0;
+            $('.clsqtyltr').each(function (i, obj) {
+                var qtyclass = $(this).text();
+                if (qtyclass == "" || qtyclass == "0") {
+                }
+                else {
+                    totalltr += parseFloat(qtyclass);
+                }
+            });
+            var totalkgs = 0;
+            $('.clsqtykgs').each(function (i, obj) {
+                var qtyclass = $(this).text();
+                if (qtyclass == "" || qtyclass == "0") {
+                }
+                else {
+                    totalkgs += parseFloat(qtyclass);
+                }
+
+            });
+            document.getElementById('Kgsclass').innerHTML = parseFloat(totalkgs).toFixed(2);
+            document.getElementById('ltrclass').innerHTML = parseFloat(totalltr).toFixed(2);
+        }
+        var newXarray = [];
+        function createpieChart(databind) {
+            $("#chart").empty();
+            newXarray = [];
+            var textname = "";
+            var ddlType = document.getElementById('ddlType').value;
+            var totalqty = databind[0].totalqty;
+            if (ddlType == "Sales Office Wise") {
+                var agent = document.getElementById("ddlsalesoffice");
+                var agentname = agent.options[agent.selectedIndex].text;
+                textname = agentname + " - " + " Classification Agents " + " - " + "Pie Chart";
+            }
+
+            var myTableDiv_1 = document.getElementById("example");
+            var divleakbar_1 = document.createElement("div");
+            
+
+            myTableDiv_1.appendChild(divleakbar_1);
+            var results = '<div class="box-body no-padding" style="height: 670px; overflow-y: scroll;"><table class="table table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="example2_info">';
+            results += '<thead><tr><th scope="col">Type</th><th scope="col">Qty</th><th scope="col">Avg Qty</th><th scope="col">Percentage</th></tr></thead></tbody>';
+            var Amount = databind[0].Amount;
+            var DeliveryQty = databind[0].DeliveryQty;
+            var AverageyQty = databind[0].AverageyQty;
+            var RouteName = databind[0].RouteName;
+            for (var i = 0; i < RouteName.length; i++) {
+                results += '<tr>';
+                results += '<td scope="row" class="1" >' + RouteName[i] + '</td>';
+                results += '<td data-title="Capacity" class="2">' + DeliveryQty[i] + '</td>';
+                results += '<td data-title="Capacity" class="clsqtyltr">' + AverageyQty[i] + '</td>';
+                results += '<td data-title="Capacity" class="clsqtykgs">' + Amount[i] + '</td></tr>';
+            }
+            results += '<tr>';
+            results += '<td scope="row" class="1" ></td>';
+            results += '<td scope="row" class="1" >Total</td>';
+            results += '<td scope="row" class="1" ><span id="ltrclass"></span></span></td>';
+            results += '<td data-title="Capacity" class="4"><span id="Kgsclass"></span></span></th><td data-title="IsTransport" ></td></tr>';
+            results += '</table></div>';
+            $(divleakbar_1).html(results);
+            GetTotalCal();
+            var myTableDiv = document.getElementById("example");
+            var divleakbar = document.createElement("div");
+            divleakbar.style.height = "300px";
+            divleakbar.setAttribute("id", "id_you_like");
+            myTableDiv.appendChild(divleakbar);
+            for (var i = 0; i < RouteName.length; i++) {
+                newXarray.push({ "category": RouteName[i], "value": parseFloat(Amount[i]) });
+            }
+            var chart = AmCharts.makeChart("id_you_like", {
+                "type": "pie",
+                "startDuration": 0,
+                "theme": "light",
+                "addClassNames": true,
+                "labelRadius": -35,
+                "labelText": "",
+                "legend": {
+                    "align": "center",
+                    "position": "bottom",
+                    "marginRight": 21,
+                    "markerType": "circle",
+                    "right": -20,
+                    "labelText": "[[title]]",
+                    "valueText": "",
+                    "valueWidth": 80,
+                    "textClickEnabled": true,
+                    "labelsEnabled": false,
+                    "autoMargins": false,
+                    "marginTop": 0,
+                    "marginBottom": 0,
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "pullOutRadius": 0,
+                    fontSize: 9,
+                    fontweight: "bold"
+                },
+                "innerRadius": "30%",
+                "defs": {
+                    "filter": [{
+                        "id": "shadow",
+                        "width": "200%",
+                        "height": "200%",
+                        "feOffset": {
+                            "result": "offOut",
+                            "in": "SourceAlpha",
+                            "dx": 0,
+                            "dy": 0
+                        },
+                        "feGaussianBlur": {
+                            "result": "blurOut",
+                            "in": "offOut",
+                            "stdDeviation": 5
+                        },
+                        "feBlend": {
+                            "in": "SourceGraphic",
+                            "in2": "blurOut",
+                            "mode": "normal"
+                        }
+                    }]
+                },
+                "dataProvider": newXarray,
+                "valueField": "value",
+                "titleField": "category",
+                "export": {
+                    "enabled": true
+                }
+            });
+        }
+
+
+        var datainXSeries = 0;
+        var datainYSeries = 0;
+        var newXarray = [];
+        var newYarray = [];
+        function createChart(databind) {
+            var myTableDiv = document.getElementById("example");
+            var divleakbar = document.createElement("div");
+            var ddldatatype = document.getElementById('ddldatatype').value;
+            if (ddldatatype == "Monthly Wise") {
+                divleakbar.style.height = "300px";
+                divleakbar.setAttribute("id", "id_you_like1");
+            }
+            else {
+                divleakbar.style.height = "300px";
+                divleakbar.setAttribute("id", "id_you_like1");
+            }
+            myTableDiv.appendChild(divleakbar);
+            var ddlType = document.getElementById('ddlType').value;
+            var textname = "";
+            //            var aqty = databind[0].DeliveryQty;
+            //            var splitqty = aqty[1].split(',');
+            //            var avgqty = splitqty[0];
+            //            if (ddlType == "Agent Wise") {
+            //                var agent = document.getElementById("ddlAgentName");
+            //                var agentname = agent.options[agent.selectedIndex].text;
+            //                textname = agentname + " Agent wise sales vs avg sales --> " + avgqty;
+            //            }
+            //            if (ddlType == "Route Wise") {
+            //                var agent = document.getElementById("ddlRouteName");
+            //                var agentname = agent.options[agent.selectedIndex].text;
+            //                textname = agentname + " Route wise sales vs avg sales --> " + avgqty;
+            //            }
+            //            if (ddlType == "Sales Office Wise") {
+            //                var agent = document.getElementById("ddlsalesoffice");
+            //                var agentname = agent.options[agent.selectedIndex].text;
+            //                textname = agentname + " Sales office wise sales vs avg sales --> " + avgqty;
+            //            }
+            datainXSeries = 0;
+            datainYSeries = 0;
+            newYarray = [];
+            newXarray = [];
+            newSalearray = [];
+            newAvgarray = [];
+            // $("#chart").empty();
+            // document.getElementById('chart').innerHTML = "";
+            for (var k = 0; k < databind.length; k++) {
+                var BranchName = [];
+                var IndentDate = databind[0].IndentDate;
+                var UnitQty = databind[k].UnitQty;
+                var DeliveryQty = databind[0].dqty;
+                var AvgQty = databind[0].aqty;
+                //                var Status = databind[0].Status;
+                newXarray = IndentDate.split(',');
+                newAvgarray = AvgQty.split(',');
+                newSalearray = DeliveryQty.split(',');
+                //                 xbranchname = databind[0].branchname;
+                //                    xcountgen = databind[0].countgen;
+                //                    xcountgen1 = databind[0].countgen1;
+
+
+                for (var i = 0; i < newXarray.length; i++) {
+
+                    newYarray.push({ "data": newSalearray[i], "name": newAvgarray[i], "val": newXarray[i].toString() });
+                    //                    newYarray.push({ 'sale': DeliveryQty[i].split(','), 'name': Status[i] });
+                }
+            }
+            var chart = AmCharts.makeChart("id_you_like1", {
+                "type": "serial",
+                "theme": "light",
+                "legend": {
+                    "useGraphSettings": true
+                },
+                "dataProvider": newYarray,
+                "valueAxes": [{
+                    "integersOnly": true,
+                    "reversed": false,
+                    "axisAlpha": 0,
+                    "dashLength": 5,
+                    "gridCount": 10,
+                    "position": "left",
+                    "title": "Sale & Avg Sale"
+                }],
+                "startDuration": 0.5,
+                "graphs": [
+                          {
+                              "balloonText": "Sale in [[category]]: [[value]]",
+                              "bullet": "round",
+                              "title": "Sale Value",
+                              "valueField": "data",
+                              "fillAlphas": 0,
+                              "fill": "#009933"
+                          }, {
+                              "balloonText": "Avg in [[category]]: [[value]]",
+                              "bullet": "round",
+                              "title": "Average Value",
+                              "valueField": "name",
+                              "fillAlphas": 0
+                          }],
+                "chartCursor": {
+                    "cursorAlpha": 0,
+                    "zoomable": false
+                },
+                "categoryField": "val",
+                "categoryAxis": {
+                    "gridPosition": "start",
+                    "axisAlpha": 0,
+                    "fillAlpha": 0.05,
+                    "fillColor": "#000000",
+                    "gridAlpha": 0,
+                    "position": "left",
+                    "labelRotation": 25
+
+                },
+                "export": {
+                    "enabled": true,
+                    "position": "bottom-right"
+                }
+            });
+        }
+
+
+        function getinventorychartreport() {
+            var txtFromdate = document.getElementById('txtFromdate').value;
+            var txtTodate = document.getElementById('txtTodate').value;
+            if (txtFromdate == "") {
+                alert("Select start date");
+                return false;
+            }
+            if (txtTodate == "") {
+                alert("Select end date");
+                return false;
+            }
+            var ddlAgentName = document.getElementById('ddlAgentName').value;
+            var ddlRouteName = document.getElementById('ddlRouteName').value;
+            var ddlsalesoffice = document.getElementById('ddlsalesoffice').value;
+            var ddlType = document.getElementById('ddlType').value;
+            if (ddlType == "Agent Wise") {
+                if (ddlsalesoffice == "" || ddlsalesoffice == "Select Sales Office") {
+                    alert("Select Sales Offic name");
+                    return false;
+                }
+                if (ddlRouteName == "" || ddlRouteName == "Select Route Name") {
+                    alert("Select route name");
+                    return false;
+                }
+                if (ddlAgentName == "" || ddlAgentName == "Select Agent Name") {
+                    alert("Select agent name");
+                    return false;
+                }
+            }
+            if (ddlType == "Route Wise") {
+                if (ddlsalesoffice == "" || ddlsalesoffice == "Select Sales Office") {
+                    alert("Select Sales Offic name");
+                    return false;
+                }
+                if (ddlRouteName == "" || ddlRouteName == "Select Route Name") {
+                    alert("Select route name");
+                    return false;
+                }
+            }
+            if (ddlType == "Sales Office Wise") {
+                if (ddlsalesoffice == "" || ddlsalesoffice == "Select Sales Office") {
+                    alert("Select Sales Offic name");
+                    return false;
+                }
+            }
+            var ddldatatype = document.getElementById('ddldatatype').value;
+
+            var data = { 'op': 'GetLineChart_agentinventorytransactions', 'startDate': txtFromdate, 'endDate': txtTodate, 'AgentName': ddlAgentName, 'RouteName': ddlRouteName, 'SalesOffice': ddlsalesoffice, 'Type': ddlType, 'ddldatatype': ddldatatype };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location.assign("Login.aspx");
+                    }
+                    else {
+                        if (msg.length > 0) {
+                            inventorychartreport(msg);
+
+                        }
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function inventorychartreport(databind) {
+            var myTableDiv = document.getElementById("example");
+            var divleakbar = document.createElement("div");
+            divleakbar.style.height = "300px";
+            myTableDiv.appendChild(divleakbar);
+            divleakbar.setAttribute("id", "id_you_like2");
+           
+            var ddlType = document.getElementById('ddlType').value;
+            var textname = "";
+//            var aqty = databind[0].DeliveryQty;
+//            var splitqty = aqty[1].split(',');
+//            var avgqty = splitqty[0];
+//            if (ddlType == "Agent Wise") {
+//                var agent = document.getElementById("ddlAgentName");
+//                var agentname = agent.options[agent.selectedIndex].text;
+//                textname = agentname + " Agent wise Inventory  ";
+//            }
+//            if (ddlType == "Route Wise") {
+//                var agent = document.getElementById("ddlRouteName");
+//                var agentname = agent.options[agent.selectedIndex].text;
+//                textname = agentname + " Route wise Inventory ";
+//            }
+//            if (ddlType == "Sales Office Wise") {
+//                var agent = document.getElementById("ddlsalesoffice");
+//                var agentname = agent.options[agent.selectedIndex].text;
+//                textname = agentname + " Sales office wise Inventory  ";
+//            }
+            datainXSeries = 0;
+            datainYSeries = 0;
+            newXarray = [];
+            newYarray = [];
+
+            newCrateIssuearray = [];
+            newCrateCloarray = [];
+            newCansIssuearray = [];
+            newCansCloarray = [];
+
+            for (var k = 0; k < databind.length; k++) {
+                var IndentDate = databind[0].IndentDate;
+                var CratesIssue = databind[k].cratesissue;
+                var CrateClo = databind[0].crtesclo;
+                var CansIssue = databind[0].cansissue;
+                var CansClo = databind[0].cansclo;
+
+                newXarray = IndentDate.split(',');
+                newCrateIssuearray = CratesIssue.split(',');
+                newCrateCloarray = CrateClo.split(',');
+                newCansIssuearray = CansIssue.split(',');
+                newCansCloarray = CansClo.split(',');
+                for (var i = 0; i < newXarray.length; i++) {
+                    newYarray.push({ "CrIssue": newCrateIssuearray[i], "CrClo": newCrateCloarray[i], "CIssue": newCansIssuearray[i].toString(), "CClo": newCansCloarray[i].toString(), "dates": newXarray[i].toString() });
+
+                }
+            }
+            var chart = AmCharts.makeChart("id_you_like2", {
+                "type": "serial",
+                "theme": "light",
+                "legend": {
+                    "useGraphSettings": true
+                },
+                "dataProvider": newYarray,
+                "valueAxes": [{
+                    "integersOnly": true,
+                    "reversed": false,
+                    "axisAlpha": 0,
+                    "dashLength": 5,
+                    "gridCount": 10,
+                    "position": "left",
+                    "title": "Sale & Avg Sale"
+                }],
+                "startDuration": 0.5,
+                "graphs": [
+                          {
+                              "balloonText": "Crate Issue in [[category]]: [[value]]",
+                              "bullet": "round",
+                              "title": "Sale Value",
+                              "valueField": "CrIssue",
+                              "fillAlphas": 0,
+                              "fill": "#009933"
+                          }, {
+                              "balloonText": "Crates Closing in [[category]]: [[value]]",
+                              "bullet": "round",
+                              "title": "Crate Closing",
+                              "valueField": "CrClo",
+                              "fillAlphas": 0
+                          }, {
+                              "balloonText": "Cans Issue in [[category]]: [[value]]",
+                              "bullet": "round",
+                              "title": "Crate Closing",
+                              "valueField": "CIssue",
+                              "fillAlphas": 0
+                          }, {
+                              "balloonText": "Cans Closing in [[category]]: [[value]]",
+                              "bullet": "round",
+                              "title": "Crate Closing",
+                              "valueField": "CClo",
+                              "fillAlphas": 0
+                          }],
+                "chartCursor": {
+                    "cursorAlpha": 0,
+                    "zoomable": false
+                },
+                "categoryField": "dates",
+                "categoryAxis": {
+                    "gridPosition": "start",
+                    "axisAlpha": 0,
+                    "fillAlpha": 0.05,
+                    "fillColor": "#000000",
+                    "gridAlpha": 0,
+                    "position": "left",
+                    "labelRotation": 25
+
+                },
+                "export": {
+                    "enabled": true,
+                    "position": "bottom-right"
+                }
+            });
+        }
+
+        function remarks_save_click() {
+            var txtRemarks = document.getElementById('txtRemarks').value;
+            if (txtRemarks == "") {
+                alert("Enter Remarks");
+                return false;
+            }
+        }
+
+
+
+        var salestype = "";
+        var did = 0;
+        var statusid = 0;
+        function getduechartreport() {
+            var txtFromdate = document.getElementById('txtFromdate').value;
+            var txtTodate = document.getElementById('txtTodate').value;
+            if (txtFromdate == "") {
+                alert("Select start date");
+                return false;
+            }
+            if (txtTodate == "") {
+                alert("Select end date");
+                return false;
+            }
+            var ddlAgentName = document.getElementById('ddlAgentName').value;
+            var ddlRouteName = document.getElementById('ddlRouteName').value;
+            var ddlsalesoffice = document.getElementById('ddlsalesoffice').value;
+            var ddlType = document.getElementById('ddlType').value;
+            if (ddlType == "Agent Wise") {
+                if (ddlsalesoffice == "" || ddlsalesoffice == "Select Sales Office") {
+                    alert("Select Sales Offic name");
+                    return false;
+                }
+                if (ddlRouteName == "" || ddlRouteName == "Select Route Name") {
+                    alert("Select route name");
+                    return false;
+                }
+                if (ddlAgentName == "" || ddlAgentName == "Select Agent Name") {
+                    alert("Select agent name");
+                    return false;
+                }
+            }
+            if (ddlType == "Route Wise") {
+                if (ddlsalesoffice == "" || ddlsalesoffice == "Select Sales Office") {
+                    alert("Select Sales Offic name");
+                    return false;
+                }
+                if (ddlRouteName == "" || ddlRouteName == "Select Route Name") {
+                    alert("Select route name");
+                    return false;
+                }
+            }
+            if (ddlType == "Sales Office Wise") {
+                if (ddlsalesoffice == "" || ddlsalesoffice == "Select Sales Office") {
+                    alert("Select Sales Offic name");
+                    return false;
+                }
+            }
+            var ddldatatype = document.getElementById('ddldatatype').value;
+            if (ddlType == "Agent Wise") {
+                var data = { 'op': 'GetLineChart_agentduetransactions', 'startDate': txtFromdate, 'endDate': txtTodate, 'AgentName': ddlAgentName, 'RouteName': ddlRouteName, 'SalesOffice': ddlsalesoffice, 'Type': ddlType, 'ddldatatype': ddldatatype };
+                var s = function (msg) {
+                    if (msg) {
+                        if (msg == "Session Expired") {
+                            alert(msg);
+                            window.location.assign("Login.aspx");
+                        }
+                        else {
+                            if (msg.length > 0) {
+                                createAgentdueChart(msg);
+                            }
+                        }
+                    }
+                    else {
+                    }
+                };
+                var e = function (x, h, e) {
+                };
+                $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+                callHandler(data, s, e);
+            }
+            else {
+                for (var k = 0; k < salesTypes.length; k++) {
+                    if (salesTypes[k].status == "1") {
+                        salestype = salesTypes[k].salestype;
+                        
+                        var data = { 'op': 'GetLineChart_agentduetransactions', 'salestype': salestype, 'classificationtype': salesTypes[k].sno, 'startDate': txtFromdate, 'endDate': txtTodate, 'AgentName': ddlAgentName, 'RouteName': ddlRouteName, 'SalesOffice': ddlsalesoffice, 'Type': ddlType, 'ddldatatype': ddldatatype };
+                        var s = function (msg) {
+                            if (msg) {
+                                if (msg == "Session Expired") {
+                                    alert(msg);
+                                    window.location.assign("Login.aspx");
+                                }
+                                else {
+                                    if (msg.length > 0) {
+                                        createdueChart(msg);
+                                    }
+                                }
+                            }
+                            else {
+                            }
+                        };
+                        var e = function (x, h, e) {
+                        };
+                        $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+                        callHandler(data, s, e);
+                    }
+                }
+            }
+        }
+
+
+
+
+        function createdueChart(databind) {
+            
+            var myTableDiv = document.getElementById("example");
+            var divleakbar = document.createElement("div");
+            divleakbar.style.height = "300px";
+//            divleakbar.style.cssText = 'height:300;.backgroundColor:#f00';
+                        did++;
+                        var idvalue = "Route wise" + did + "";
+                        divleakbar.setAttribute("id", "idvalue");
+            myTableDiv.appendChild(divleakbar);
+            var ddlType = document.getElementById('ddlType').value;
+            var textname = "";
+//                        var aqty = databind[0].DeliveryQty;
+//                        var splitqty = aqty[1].split(',');
+//                        var avgqty = splitqty[0];
+            var sta = databind[0].Sstatus;
+//                        var splitsta = sta[2];
+                        if (ddlType == "Agent Wise") {
+                            var agent = document.getElementById("ddlAgentName");
+                            var agentname = agent.options[agent.selectedIndex].text;
+                            textname = agentname + " - " + " Agent wise Sale Value vs Due ";
+                        }
+                        if (ddlType == "Route Wise") {
+                            var agent = document.getElementById("ddlRouteName");
+                            var agentname = agent.options[agent.selectedIndex].text;
+                            textname = agentname + " -" + " Route wise " + splitsta + " - " + " Sale Value vs Due ";
+                        }
+                        if (ddlType == "Sales Office Wise") {
+                            var agent = document.getElementById("ddlsalesoffice");
+                            var agentname = agent.options[agent.selectedIndex].text;
+                            textname = agentname + " - " + sta + " - " + " Wise Sale Value vs Due ";
+                        }
+            datainXSeries = 0;
+            datainYSeries = 0;
+            newYarray = [];
+            newXarray = [];
+            newSalearray = [];
+            newDuearray = [];
+            // $("#chart").empty();
+            // document.getElementById('chart').innerHTML = "";
+            for (var k = 0; k < databind.length; k++) {
+                var BranchName = [];
+                var IndentDate = databind[0].IndentDate;
+                //                var UnitQty = databind[k].UnitQty;
+                var SaleValue = databind[0].dqty;
+                var DueVale = databind[0].aqty;
+                newXarray = IndentDate.split(',');
+                newDuearray = DueVale.split(',');
+                newSalearray = SaleValue.split(',');
+
+
+                for (var i = 0; i < newXarray.length; i++) {
+
+                    newYarray.push({ "data": newSalearray[i], "name": newDuearray[i], "val": newXarray[i].toString() });
+                    //                    newYarray.push({ 'sale': DeliveryQty[i].split(','), 'name': Status[i] });
+                }
+            }
+            var chart = AmCharts.makeChart(divleakbar, {
+                "type": "serial",
+                "theme": "light",
+                 "titles": [{
+                "text": textname
+                   }],
+                "legend": {
+                    "useGraphSettings": true
+                },
+                "dataProvider": newYarray,
+                "valueAxes": [{
+                    "integersOnly": true,
+                    "reversed": false,
+                    "axisAlpha": 0,
+                    "dashLength": 5,
+                    "gridCount": 10,
+                    
+                    
+                }],
+                "startDuration": 0.5,
+                "graphs": [
+                          {
+                              "balloonText": "Sale Value" +sta+" in [[category]]: [[value]]",
+                              "bullet": "round",
+                              "title": "Sale Value",
+                              "valueField": "data",
+                              "fillAlphas": 0,
+                              "fillColor": "#800000",
+                              "fill": "#009933"
+                          }, {
+                              "balloonText": "Due Value" +sta+" in [[category]]: [[value]]",
+                              "bullet": "round",
+                              "title": "Due Value",
+                              "valueField": "name",
+                              "fillColor": "#4B0082",
+                              "fillAlphas": 0
+                          }],
+                "chartCursor": {
+                    "cursorAlpha": 0,
+                    "zoomable": false
+                },
+                "categoryField": "val",
+                "categoryAxis": {
+                    "gridPosition": "start",
+                    "axisAlpha": 0,
+                    "fillAlpha": 0.05,
+                    "fillColor": "#000000",
+                    "gridAlpha": 0,
+                    "position": "left",
+                    "labelRotation": 25
+
+                },
+                "export": {
+                    "enabled": true,
+                    "position": "bottom-right"
+                }
+            });
+       }
+
+
+
+    </script>
+</head>
+<body style="background: whitesmoke !important;">
+    <!-- Pushy Menu -->
+    <nav class="pushy pushy-left">
+        <ul>
+            <li class="home-icon"><a href="#" onclick="homeclick();">&nbsp&nbsp Home</a></li>
+            <li class="about-icon"><a href="#" onclick="Indentclick();">&nbsp&nbsp Indent</a></li>
+            <li class="features-icon"><a href="#" onclick="Salesclick();">&nbsp&nbsp Sales</a></li>
+            <li class="photos-icon"><a href="#" onclick="dcclick();">&nbsp&nbsp DC Report</a></li>
+            <li class="video-icon"><a href="#" onclick="balanceclick();">&nbsp&nbsp Closing Stock
+                Report</a></li>
+            <li class="blog-icon"><a href="#" onclick="lekageclick();">&nbsp&nbsp Lekages</a></li>
+            <li class="contact-icon"><a href="#" onclick="cratesclick();">&nbsp&nbsp Inventory</a></li>
+            <li class="cash-icon"><a href="#" onclick="cashclick();">&nbsp&nbsp Cash Book</a></li>
+            <li id="liapvocher" class="approve-icon"><a href="#" onclick="approvalvoucherclick();">&nbsp&nbsp Approval
+                Voucher</a></li>
+            <li class="logout-icon"><a href="#" onclick="logoutclick();">&nbsp&nbsp Logout</a></li>
+        </ul>
+    </nav>
+    <!-- Site Overlay -->
+    <div class="site-overlay">
+    </div>
+    <!-- Your Content -->
+    <div id="container">
+        <!-- Menu Button -->
+        <div class="menu-btn">
+            &#9776; Menu</div>
+        <div style="padding: 13px; padding-left: 36px; color: #2a70bb; text-align: left;
+            cursor: pointer; font-size: 25px;">
+            <i class="fa fa-cogs" aria-hidden="true"></i>Inventory Report
+        </div>
+        <!-- table code-->
+        <form role="form">
+        <div id="divcontroles" class="box-body">
+            <div class="form-group">
+                <label for="exampleInputFile">
+                    SalesOffice Name:</label>
+                <select id="ddlType" class="form-control" onchange="ddlTypeChange();">
+                    <option>Sales Office Wise</option>
+                    <option>Route Wise</option>
+                    <option>Agent Wise</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">
+                    Type:</label>
+                <select id="ddldatatype" class="form-control">
+                    <option>Day Wise</option>
+                    <option>Monthly Wise</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">
+                    SalesOffice Name:</label>
+                <select class="form-control" id="ddlsalesoffice" onchange="ddlSalesOfficeChange();">
+                </select>
+            </div>
+            <div id="divroute">
+                <div class="form-group">
+                    <label for="exampleInputFile">
+                        Route Name:</label>
+                    <select class="form-control" id="ddlRouteName" onchange="ddlRouteNameChange();" style="width: 1043px;">
+                    </select>
+                </div>
+            </div>
+            <div id="divagent">
+                <div class="form-group">
+                    <label for="exampleInputFile">
+                        Agent Name:</label>
+                    <select class="form-control" id="ddlAgentName" style="width: 1043px;">
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">
+                    From Date</label>
+                <input type="date" id="txtFromdate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">
+                    To Date</label>
+                <input type="date" id="txtTodate" class="form-control" />
+            </div>
+            <div class="box-footer" style="text-align: center;">
+                <input type="button" id="submit" value="Submit" class="btn btn-success" onclick="DetailsValidating()" />
+            </div>
+        </div>
+        <div id="mydiv" style="display: none;">
+            <img src="images/loading.gif" alt="Loading..." id="LoadingGraphic" class="ajax-loader" />
+        </div>
+ <div class="row">
+            <div class="col-md-4">
+                <!-- LINE CHART -->
+                <div class="box box-solid" style="background: linear-gradient(to right, #ccccff 47%, #ffccff 105%)">
+                   <div class="box-header with-border">
+                        <h3 class="box-title">
+                            <i style="padding-right: 5px;" class="fa fa-fw fa-joomla"></i></h3>
+                        <div class="box-tools pull-right">
+                            <button class="btn btn-box-tool" data-widget="collapse">
+                                <i class="fa fa-minus"></i> 
+                            </button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                    <div id="example">
+                        <div class="chart-wrapper" style="margin: auto;">
+                            <div id="chart"></div>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </form>
+    </div>
+    <!-- Pushy JS -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="js/pushy.min.js"></script>
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-36251023-1']);
+        _gaq.push(['_setDomainName', 'jqueryscript.net']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+</body>
+</html>

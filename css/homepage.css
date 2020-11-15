@@ -1,0 +1,232 @@
+﻿ .homepage
+        {
+            background: url(../images/bg1.jpg) no-repeat center center;
+            background-attachment: fixed;
+            -webkit-background-size: 100%;
+            -moz-background-size: 100%;
+            -o-background-size: 100%;
+            background-size: 100%;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        .home-icon a
+        {
+           
+        }
+        .a-icon a
+        {
+            background: url(../images/salesicon.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 20px;
+            text-align: 80% 10%;
+        }
+        .f-icon a
+        {
+            background: url(../images/order.png);
+            background-size: auto 60%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .p-icon a
+        {
+            background: url(../images/creat.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        
+        .b-icon a
+        {
+            background: url(../images/DC.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .c-icon a
+        {
+            background: url(../images/rupe.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .l-icon a
+        {
+            background: url(../images/icons/white/lock.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .t-icon a
+        {
+            background: url(../images/icons/white/tools.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .e-icon a
+        {
+            background: url(../images/icons/white/envelope.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .d-icon a
+        {
+            background: url(../images/icons/white/download.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .v-icon a
+        {
+            background: url(../images/icons/white/video.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .h-icon a
+        {
+            background: url(../images/icons/white/heart.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .l-icon a
+        {
+            background: url(../images/icons/white/logout.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .cashbook-icon a
+        {
+            background: url(../images/cashbook.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .chart-icon a
+        {
+            background: url(../images/charts.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .master-icon a
+        {
+            background: url(../images/masters.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .home-icon
+        {
+            background: url(../images/icons/turquoise/home.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .about-icon
+        {
+            background: url(../images/icons/turquoise/user.png);            
+           /* background: url(images/icons/white/user.png);*/
+            background-size: auto 50%;
+            background-repeat: no-repeat;
+           /* background-position: 10px 50%;*/
+            background-position: 10px 50%;
+        }
+        .features-icon
+        {
+            background: url(../images/icons/turquoise/settings.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .photos-icon
+        {
+            background: url(../images/icons/turquoise/docs.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .blog-icon
+        {
+            background: url(../images/icons/turquoise/caution.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .contact-icon
+        {
+            background: url(../images/icons/turquoise/tools.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .cash-icon
+        {
+            background: url(../images/icons/turquoise/briefcase.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .approve-icon
+        {
+            width:300px;
+            background: url(../images/icons/turquoise/pencil.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .lock-icon
+        {
+            background: url(../images/icons/turquoise/briefcase.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .tools-icon
+        {
+            background: url(../images/icons/turquoise/tools.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .envelope-icon
+        {
+            background: url(../images/icons/turquoise/envelope.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .download-icon
+        {
+            background: url(../images/icons/turquoise/download.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .video-icon
+        {
+            background: url(../images/icons/turquoise/toogle.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .heart-icon
+        {
+            background: url(../images/icons/turquoise/heart.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .logout-icon
+        {
+            background: url(../images/icons/turquoise/logout.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }

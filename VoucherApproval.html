@@ -1,0 +1,854 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Sales App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/demo.css">
+    <!-- Pushy CSS -->
+    <link rel="stylesheet" href="css/pushy.css">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="CustomCSS/custom.css" rel="stylesheet" type="text/css" />
+    <!-- jQuery -->
+    <!-- Modernizr -->
+    <script src="js/jquery-1.7.1.min.js" type="text/javascript"></script>
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    <style type="text/css">
+        .homepage
+        {
+            background: url(images/bg1.jpg) no-repeat center center;
+            background-attachment: fixed;
+            -webkit-background-size: 100%;
+            -moz-background-size: 100%;
+            -o-background-size: 100%;
+            background-size: 100%;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+        .home-icon a
+        {
+        }
+        .a-icon a
+        {
+            background: url(images/salesicon.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 20px;
+            text-align: 80% 10%;
+        }
+        .f-icon a
+        {
+            background: url(images/order.png);
+            background-size: auto 60%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .p-icon a
+        {
+            background: url(images/creat.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        
+        .b-icon a
+        {
+            background: url(images/DC.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .c-icon a
+        {
+            background: url(images/rupe.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .l-icon a
+        {
+            background: url(images/icons/white/lock.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .t-icon a
+        {
+            background: url(images/icons/white/tools.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .e-icon a
+        {
+            background: url(images/icons/white/envelope.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .d-icon a
+        {
+            background: url(images/icons/white/download.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .v-icon a
+        {
+            background: url(images/icons/white/video.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .h-icon a
+        {
+            background: url(images/icons/white/heart.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .l-icon a
+        {
+            background: url(images/icons/white/logout.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .cashbook-icon a
+        {
+            background: url(images/cashbook.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .chart-icon a
+        {
+            background: url(images/charts.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .master-icon a
+        {
+            background: url(images/masters.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 50% 15px;
+        }
+        .home-icon
+        {
+            background: url(images/icons/turquoise/home.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .about-icon
+        {
+            background: url(images/icons/turquoise/user.png); /* background: url(images/icons/white/user.png);*/
+            background-size: auto 50%;
+            background-repeat: no-repeat; /* background-position: 10px 50%;*/
+            background-position: 10px 50%;
+        }
+        .features-icon
+        {
+            background: url(images/icons/turquoise/settings.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .photos-icon
+        {
+            background: url(images/icons/turquoise/docs.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .blog-icon
+        {
+            background: url(images/icons/turquoise/caution.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .contact-icon
+        {
+            background: url(images/icons/turquoise/tools.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .cash-icon
+        {
+            background: url(images/icons/turquoise/briefcase.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .approve-icon
+        {
+            width: 300px;
+            background: url(images/icons/turquoise/pencil.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .lock-icon
+        {
+            background: url(images/icons/turquoise/briefcase.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .tools-icon
+        {
+            background: url(images/icons/turquoise/tools.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .envelope-icon
+        {
+            background: url(images/icons/turquoise/envelope.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .download-icon
+        {
+            background: url(images/icons/turquoise/download.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .video-icon
+        {
+            background: url(images/icons/turquoise/toogle.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .heart-icon
+        {
+            background: url(images/icons/turquoise/heart.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+        .logout-icon
+        {
+            background: url(images/icons/turquoise/logout.png);
+            background-size: auto 55%;
+            background-repeat: no-repeat;
+            background-position: 10px 50%;
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            var date = new Date();
+            var day = date.getDate();
+            var month = date.getMonth() + 1;
+            var year = date.getFullYear();
+            if (month < 10) month = "0" + month;
+            if (day < 10) day = "0" + day;
+            today = year + "-" + month + "-" + day;
+            $('#txtFromDate').val(today);
+            $('#txtToDate').val(today);
+            getloginvalidation();
+            FillSalesOffice();
+            checkloginstatus();
+        });
+        function checkloginstatus() {
+            var data = { 'op': 'checkloginstatus' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "NotValid") {
+                        window.location = 'login.html';
+                    }
+                    else if (msg == "valid") {
+
+                    }
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            callHandler(data, s, e);
+        }
+        var sessionarray = [];
+        function getloginvalidation() {
+            var data = { 'op': 'Getsessionvalues' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg[0].LevelType == "AccountsOfficer" || msg[0].LevelType == "Director") {
+
+                        $('#divdisplay').css('display', 'block');
+                        leveltype = msg[0].LevelType;
+                        sessionarray = msg;
+                        FillSalesOffice();
+                    }
+                    else {
+                        $('#divdisplay').css('display', 'none');
+                        GetRisedVouchers();
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function FillSalesOffice() {
+            var data = { 'op': 'GetSalesOffice' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "Login.aspx";
+                    }
+                    BindSalesOffice(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function BindSalesOffice(msg) {
+            var ddlsalesOffice = document.getElementById('ddlsalesOffice');
+            var length = ddlsalesOffice.options.length;
+            ddlsalesOffice.options.length = null;
+            var opt = document.createElement('option');
+            opt.innerHTML = "select";
+            ddlsalesOffice.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i].BranchName != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].BranchName;
+                    opt.value = msg[i].Sno;
+                    ddlsalesOffice.appendChild(opt);
+                }
+            }
+        }
+        function BtnGenerateClick() {
+            var salesOffice = document.getElementById("ddlsalesOffice").value;
+            if (salesOffice == "select") {
+                alert("Select Sales Office");
+                return false;
+            }
+            GetSalesOffice(salesOffice);
+        }
+        function GetSalesOffice(salesOffice) {
+            var fromdate = document.getElementById("txtFromDate").value;
+            var ToDate = document.getElementById("txtToDate").value;
+            var data = { 'op': 'Get_RaisedVoucherdetails', 'BranchID': salesOffice, 'fromdate': fromdate, 'ToDate': ToDate };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "Login.aspx";
+                    }
+                    fillvouchers(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function fillvouchers(msg) {
+            j = 1;
+            var results = '<div  ><table class="responsive-table" style="overflow:scroll;" border-radius="25px"; role="grid" aria-describedby="example2_info">';
+            results += '<thead><tr style="background-color:white;"></th><th scope="col">VoucherId</th><th scope="col">EmployeeName</th><th scope="col">Type</th><th scope="col">Amount</th></tr></thead></tbody>';
+            var k = 1;
+            var l = 0;
+            var COLOR = ["white"];
+            for (var i = 0; i < msg.length; i++) {
+                results += '<tr ><th scope="row" class="1" style="text-align:center;display:none;" background-color:"white;">' + j + '</th>';
+                results += '<td data-title="VoucherId" class="2" onclick="btnViewVoucher(\'' + msg[i].VoucherID + '-' + msg[i].branchvocherid + '\');"><span style="text-decoration: underline;">' + msg[i].branchvocherid + '</span></td>';
+                results += '<td  data-title="EmployeeName" class="3">' + msg[i].EmpName + '</td>';
+                results += '<td  data-title="VoucherType" class="4">' + msg[i].VoucherType + '</td>';
+                results += '<td  data-title="Amount" class="3">' + msg[i].Amount + '</td>';
+                results += '<td  data-title="inwarddate" style="text-align:center;display:none; " class="4">' + msg[i].Sno + '</td>';
+                results += '<td data-title="invoicedate" style="text-align:center;display:none; " >' + msg[i].Empid + '</td><tr>';
+                j++;
+            }
+            $("#GriddivRaisedVouchers").html(results);
+        }
+        function GetRisedVouchers() {
+            var BranchID = "0";
+            var data = { 'op': 'Get_RaisedVoucherdetails', 'BranchID': BranchID };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "Login.aspx";
+                    }
+                    fillvouchers(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        var VoucherID = "";
+        var branchID = "0";
+        var voucher;
+        var branchvoucherid = "0"
+        function btnViewVoucher(VoucherID) {
+//            branchvoucherid = $(thisid).parent().parent().children('.2').html(); ;
+
+            var splits = VoucherID.split("-");
+            voucher = splits[0];
+            branchvoucherid = splits[1];
+            if (sessionarray[0].LevelType == "AccountsOfficer" || sessionarray[0].LevelType == "Director") {
+                $('.div_salesOffice').css('display', 'table-row');
+                branchID = document.getElementById("ddlsalesOffice").value;
+            }
+            else {
+            }
+            var data = { 'op': 'GetBtnViewVoucherclick', 'BranchID': branchID, 'VoucherID': voucher };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "Login.aspx";
+                    }
+                    BindViewVouchers(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function BindViewVouchers(msg) {
+            $('#divMainAddNewRow').css('display', 'block');
+            var emp = [];
+            $('#divHeadofAccount').css('display', 'block');
+            document.getElementById("spnName").innerHTML = msg[0].Description;
+            document.getElementById("spnVoucherType").innerHTML = msg[0].VoucherType;
+            document.getElementById("spnAmount").innerHTML = msg[0].Amount;
+            document.getElementById("spnApprovalEmp").innerHTML = msg[0].ApproveEmpName;
+            document.getElementById("txtCashierRemarks").value = msg[0].Remarks;
+            document.getElementById("spnVoucherID").innerHTML = branchvoucherid;
+            document.getElementById("txtApprovalamt").value = msg[0].ApprovalAmount;
+            document.getElementById("txtRemarks").value = msg[0].ApprovalRemarks;
+            document.getElementById("txtApprovalamt").value = msg[0].Amount;
+            PopupOpen(voucher);
+        }
+        function PopupOpen(voucher) {
+            var data = { 'op': 'GetAppriveSubPaybleValues', 'VoucherID': voucher, 'BranchID': branchID };
+            var s = function (msg) {
+                if (msg) {
+                  fillheadofamount(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function fillheadofamount(msg) {
+            j = 1;
+            var results = '<div  style="overflow:auto;"><table class="table table-bordered table-hover dataTable no-footer" style="background-color:"#daffff"" id="tableCashFormdetails">';
+            results += '<thead><tr><th scope="col" style="text-align:center;">Head of Account</th><th scope="col" style="text-align:center;">Amount</th></tr></thead></tbody>';
+            var k = 1;
+            var l = 0;
+            var COLOR = ["#b3ffe6", "AntiqueWhite", "#daffff", "MistyRose", "Bisque"];
+            for (var i = 0; i < msg.length; i++) {
+                results += '<tr style="background-color: "#daffff"" ><th scope="row" class="1" style="text-align:center;display:none;">' + j + '</th>';
+                results += '<td style="text-align:center;display:none;">' + msg[i].HeadSno + '</td>';
+                results += '<td  >' + msg[i].HeadOfAccount + '</td>';
+                results += '<td  class="tammountcls" >' + msg[i].Amount + '</td><tr>';
+                j++;
+            }
+            results += '<tr><th scope="row" class="1" style="text-align:center;">Total</th>';
+            results += '<td data-title="brandstatus" class="3"><span id="totalcls1" class="badge bg-yellow"></span></td></tr>';
+            //results += '<td style:"display-none" data-title="brandstatus" class="5"></td></tr>';
+            results += '</table></div>';
+            $("#divHeadofAccount").html(results);
+            GettotalclsCal();
+        }
+        function GettotalclsCal() {
+            var totamount = 0;
+            $('.tammountcls').each(function (i, obj) {
+                var qtyclass = $(this).text();
+                if (qtyclass == "" || qtyclass == "0") {
+                }
+                else {
+                    totamount += parseFloat(qtyclass);
+                }
+            });
+            document.getElementById('totalcls1').innerHTML = parseFloat(totamount).toFixed(2);
+        }
+        function OrdersCloseClick() {
+            $('#divMainAddNewRow').css('display', 'none');
+        }
+        function VoucherApproval() {
+            var Remarks = document.getElementById("txtCashierRemarks").value;
+            var Approvalamt = document.getElementById("txtApprovalamt").value;
+            if (Approvalamt == "") {
+                alert("Enter Amount");
+                return false;
+            }
+            var branchID = "0";
+            var LevelType = sessionarray[0].LevelType;
+            if (LevelType == "AccountsOfficer" || LevelType == "Director") {
+                $('.div_salesOffice').css('display', 'table-row');
+                branchID = document.getElementById("ddlsalesOffice").value;
+            }
+            else {
+            }
+            btnval = document.getElementsByTagName('span')[19].innerHTML;
+            //            btnval = document.getElementById("Button1").value;
+            if (btnval == "Approve") {
+                confi = confirm("Do You want to approve Details");
+              
+            }
+            if (confi == "true") {
+                var AppRemarks = document.getElementById("txtRemarks").value;
+                var Status = "A";
+                var data = { 'op': 'VoucherApproval', 'VoucherID': voucher, 'BranchID': branchID, 'Approvalamt': Approvalamt, 'AppRemarks': Remarks, 'Status': Status, 'Remarks': Remarks };
+                var s = function (msg) {
+                    if (msg) {
+                        alert(msg);
+                        $('#divMainAddNewRow').css('display', 'none');
+                        document.getElementById("txtCashierRemarks").value = "";
+                        document.getElementById("txtApprovalamt").value = "";
+                        document.getElementById("txtRemarks").value = "";
+                        var LevelType = sessionarray[0].LevelType;
+                        if (LevelType == "AccountsOfficer" || LevelType == "Director") {
+                            BtnGenerateClick();
+                        }
+                        else {
+                            GetRisedVouchers();
+                        }
+                    }
+                    else {
+                    }
+                };
+                var e = function (x, h, e) {
+                };
+            }
+            callHandler(data, s, e);
+        }
+        function VoucherReject() {
+            var Remarks = document.getElementById("txtCashierRemarks").value;
+            var Approvalamt = document.getElementById("txtApprovalamt").value;
+            if (Approvalamt == "") {
+                alert("Enter Amount");
+                return false;
+            }
+            var branchID = "0";
+            var LevelType = sessionarray[0].LevelType;
+            if (LevelType == "AccountsOfficer" || LevelType == "Director") {
+                $('.div_salesOffice').css('display', 'table-row');
+                branchID = document.getElementById("ddlsalesOffice").value;
+            }
+            else {
+            }
+            btnval = document.getElementsByTagName('span')[27].innerHTML;
+            //            btnval = document.getElementById("Button1").value;
+            if (btnval == "Reject") {
+                confi = confirm("Do You want to Reject Details");
+
+            }
+            if (confi == "true") {
+                var AppRemarks = document.getElementById("txtRemarks").value;
+                var Status = "C";
+                var data = { 'op': 'VoucherReject', 'VoucherID': voucher, 'BranchID': branchID, 'Approvalamt': Approvalamt, 'Remarks': Remarks, 'Status': Status };
+                var s = function (msg) {
+                    if (msg) {
+                        alert(msg);
+                        $('#divMainAddNewRow').css('display', 'none');
+                        document.getElementById("txtCashierRemarks").value = "";
+                        document.getElementById("txtApprovalamt").value = "";
+                        document.getElementById("txtRemarks").value = "";
+                        var LevelType = sessionarray[0].LevelType;
+                        if (LevelType == "AccountsOfficer" || LevelType == "Director") {
+                            BtnGenerateClick();
+                        }
+                        else {
+                            GetRisedVouchers();
+                        }
+                    }
+                    else {
+                    }
+                };
+            }
+            else {
+
+            }
+            var e = function (x, h, e) {
+            };
+
+            callHandler(data, s, e);
+        }
+
+        function logoutclick() {
+            var data = { 'op': 'log_out' };
+            var s = function (msg) {
+                if (msg == "Valid") {
+                    window.location = 'home.html';
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            callHandler(data, s, e);
+        }
+
+        function homeclick() {
+            window.location = "home.html";
+        }
+        function Indentclick() {
+            window.location = "Indent.html";
+        }
+        function Salesclick() {
+            window.location = "sales.html";
+        }
+        function dcclick() {
+            window.location = "dcreport.html";
+        }
+        function balanceclick() {
+            window.location = "ClosingStock.html";
+        }
+        function lekageclick() {
+            window.location = "lekages.html";
+        }
+        function cratesclick() {
+            window.location = "crates.html";
+        }
+        function cashclick() {
+            window.location = "cashbook.html";
+        }
+        function approvalvoucherclick() {
+            var branchID = "0";
+            var LevelType = sessionarray[0].LevelType;
+            if (LevelType == "AccountsOfficer" || LevelType == "Director") {
+                $('.div_salesOffice').css('display', 'table-row');
+                window.location = "VoucherApproval.html";
+            }
+            else {
+                alert("You Dont Have A permission Amount");
+            }
+        }
+        function callHandler(d, s, e) {
+            $.ajax({
+                url: 'Bus.axd',
+                data: d,
+                type: 'GET',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                async: true,
+                cache: true,
+                success: s,
+                error: e
+            });
+        }
+    </script>
+</head>
+<body style="background: whitesmoke !important;">
+    <!-- Pushy Menu -->
+    <nav class="pushy pushy-left">
+        <ul>
+            <li class="home-icon"><a href="#" onclick="homeclick();">&nbsp&nbsp Home</a></li>
+            <li class="about-icon"><a href="#" onclick="Indentclick();">&nbsp&nbsp Indent</a></li>
+            <li class="features-icon"><a href="#" onclick="Salesclick();">&nbsp&nbsp Sales</a></li>
+            <li class="photos-icon"><a href="#" onclick="dcclick();">&nbsp&nbsp DC Report</a></li>
+            <li class="video-icon"><a href="#" onclick="balanceclick();">&nbsp&nbsp Closing Stock Report</a></li>
+            <li class="blog-icon"><a href="#" onclick="lekageclick();">&nbsp&nbsp Lekages</a></li>
+            <li class="contact-icon"><a href="#" onclick="cratesclick();">&nbsp&nbsp Inventory</a></li>
+            <li class="cash-icon"><a href="#" onclick="cashclick();">&nbsp&nbsp Cash Book</a></li>
+            <li id="liapvocher" class="approve-icon"><a href="#" onclick="approvalvoucherclick();">&nbsp&nbsp Approval
+                Voucher</a></li>
+            <li class="logout-icon"><a href="#" onclick="logoutclick();">&nbsp&nbsp Logout</a></li>
+        </ul>
+    </nav>
+    <!-- Site Overlay -->
+    <div class="site-overlay">
+    </div>
+    <!-- Your Content -->
+    <div id="container">
+        <!-- Menu Button -->
+        <div class="menu-btn">
+            &#9776; Menu</div>
+        <!-- table code-->
+        <form role="form">
+        <div class="box-body" id="divdisplay">
+            <div class="form-group">
+                <label for="exampleInputEmail1">
+                    Sales Office :</label>
+                <select class="form-control" id="ddlsalesOffice" onchange="routechange(this);">
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">
+                    From Date
+                </label>
+                <input type="date" id="txtFromDate" class="form-control" value="">
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">
+                    To Date
+                </label>
+                <input type="date" id="txtToDate" class="form-control" value="">
+            </div>
+            <div class="box-footer" style="text-align: center;">
+                <input id="btn_save" type="button" class="btn btn-primary" name="submit" value="Genarate"
+                    onclick="BtnGenerateClick();">
+            </div>
+        </div>
+        <table class="responsive-table" role="grid" aria- describedby="example2_info" id="tbl_Indent_value">
+        </table>
+        <div id="GriddivRaisedVouchers" style="overflow: auto;">
+        </div>
+        <div id="divMainAddNewRow" class="pickupclass" style="text-align: center; height: 100%;
+            width: 100%; position: absolute; display: none; left: 0%; top: 0%; z-index: 99999;
+            background: rgba(192, 192, 192, 0.7);">
+            <div id="divAddNewRow" style="border: 5px solid #A0A0A0; position: absolute; top: 8%;
+                background-color: White; left: 2%; right: 10%; width: 98%; height: 100%; -webkit-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+                -moz-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65); box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+                border-radius: 10px 10px 10px 10px;">
+                <div id="showpopup">
+                    <table id="tableCollectionDetails" class="actions-modal-group" border="1">
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold">&nbsp&nbsp Name:</span> <span id="spnName"></span>
+                            </td>
+                            <td>
+                                <span style="font-weight: bold">Voucher ID:</span> <span id="spnVoucherID" class="form_input">
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold">Voucher Type:</span> <span id="spnVoucherType" class="form_input">
+                                </span>
+                            </td>
+                            <td>
+                                <span style="font-weight: bold">Amount:</span> <span id="spnAmount" class="form_input">
+                                </span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold">ApprovalEmployee:</span> <span id="spnApprovalEmp"
+                                    class="form_input"></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <textarea rows="4" cols="45" id="txtCashierRemarks" class="form-control" placeholder="Enter Remarks"></textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold">Approval Amount:</span>
+                            </td>
+                            <td style="height: 40px;">
+                                <input type="text" id="txtApprovalamt" class="form-control" value="" onkeypress="return numberOnlyExample();"
+                                    placeholder="Enter Approval Amount" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span style="font-weight: bold">Approval Remarks:</span>
+                            </td>
+                            <td>
+                                <input type="text" id="txtRemarks" class="form-control" value="" onkeypress="return numberOnlyExample();"
+                                    placeholder="Enter Remarks" />
+                            </td>
+                        </tr>
+                    </table>
+               
+                </br>
+                <table align="center">
+                    <tr>
+                        <td colspan="2">
+                            <div id="divHeadofAccount" class="headaccount" style="text-align: center;">
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                </br>
+                <table align="center">
+                    <tr>
+                        <td colspan="2" style="height: 40px;">
+                            <a id="Button1" onclick="VoucherApproval();" class="btn icon-btn btn-primary" href="#">
+                                <span id="Button1" onclick="VoucherApproval();" class="glyphicon btn-glyphicon  glyphicon-ok-circle img-circle text-success"></span>
+                                Approve
+                            </a>
+                            <a id="Button2" onclick="VoucherReject();" class="btn icon-btn btn-danger" href="#">
+                                <span id="Button2" onclick="VoucherReject();" class="glyphicon btn-glyphicon1  glyphicon-remove img-circle text-success"></span>
+                                Reject
+                            </a>
+                            <!--<input type="button" id="Button1" value="Approve" onclick="VoucherApproval();" class="btn btn-success" />-->
+                            <!--<input type="button" id="Button2" value="Reject" onclick="VoucherReject();" class="btn btn-danger" />-->
+                        </td>
+                    </tr>
+                </table>
+                 </div>
+            <!--    <table align="center">
+                    <tr>
+                        <td colspan="2" style="height: 40px;">
+                            <input type="button" id="Button1" value="Approve" onclick="VoucherApproval();" class="btn btn-success" />
+                            <input type="button" id="Button2" value="Reject" onclick="VoucherReject();" class="btn btn-danger" />
+                        </td>
+                    </tr>
+                </table>-->
+            </div>
+            <div id="divclose" style="width: 35px; top: 7%; right: 3.5%; position: absolute;
+                z-index: 99999; cursor: pointer;">
+                <img src="Images/Odclose.png" alt="close" onclick="OrdersCloseClick();" />
+            </div>
+        </div>
+        <span style="color: green; font-weight: bold; font-size: 25px;" align="left" id="lblid">
+        </span><span id="totalcls" align="left" style="color: Red; font-weight: bold; font-size: 25px;
+            padding-left: 150px;"></span>
+        </form>
+    </div>
+    <!-- Pushy JS -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="js/pushy.min.js"></script>
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-36251023-1']);
+        _gaq.push(['_setDomainName', 'jqueryscript.net']);
+        _gaq.push(['_trackPageview']);
+
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,1260 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <title>Sales App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <link rel="stylesheet" href="css/normalize.css">
+    <link rel="stylesheet" href="css/demo.css">
+    <!-- Pushy CSS -->
+    <link rel="stylesheet" href="css/pushy.css">
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="CustomCSS/custom.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link href="CustomCSS/font-awesome.css" rel="stylesheet" type="text/css" />
+    <!-- jQuery -->
+    <!-- Modernizr -->
+    <script src="js/jquery-1.7.1.min.js" type="text/javascript"></script>
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    <link href="css/homepage.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="//cdn.jsdelivr.net/jquery/1/jquery.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap/3/css/bootstrap.css" />
+    <!-- Include Date Range Picker -->
+    <script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
+    <link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
+    <script src="https://www.amcharts.com/lib/3/amcharts.js"></script>
+    <script src="https://www.amcharts.com/lib/3/pie.js"></script>
+    <script src="https://www.amcharts.com/lib/3/plugins/export/export.min.js"></script>
+    <link rel="stylesheet" href="https://www.amcharts.com/lib/3/plugins/export/export.css"
+        type="text/css" media="all" />
+    <script src="https://www.amcharts.com/lib/3/themes/light.js"></script>
+    <script src="https://www.amcharts.com/lib/3/serial.js"></script>
+    <script type="text/javascript" src="js/datetime.js"></script>
+    <style type="text/css">
+        #mydiv
+        {
+            height: 400px;
+            position: relative;
+            background-color: #F8F9F9; /* for demonstration */
+        }
+        .ajax-loader
+        {
+            position: absolute;
+            height: 100px;
+            width: 100px;
+            left: 50%;
+            top: 50%;
+            margin-left: -32px; /* -1 * image width / 2 */
+            margin-top: -32px; /* -1 * image height / 2 */
+        }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            checkboxweekdate();
+            fillcsoroutes();
+            getloginvalidation();
+            $('#mydiv').css('display', 'none');
+            $('#divclose').css('display', 'none');
+            $('#divcontrols').css('display', 'block');
+            $('#divtotal').css('display', 'none');
+            checkloginstatus();
+        });
+        function fillcheckboxweekdates(msg) {
+            var chkresults = '<div style="height: 200px;overflow: auto;"><table id="tblchk" style="width:100%;">';
+            for (var i = 0; i < msg.length; i++) {
+                chkresults += '<tr>';
+                chkresults += '<td style="width:100%;"><label for="one"><input type="checkbox" class="checkedid" id="chk' + msg[i].weeknumbers + '" value=' + msg[i].weeknumbers + ' />week' + msg[i].weekname + '</label></td></tr>';
+            }
+            $("#checkboxes").html(chkresults);
+        }
+        function checkboxweekdate() {
+            var data = { 'op': 'getcheckboxweekdates' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg.length > 0) {
+                        fillcheckboxweekdates(msg);
+                    }
+                    else {
+
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        var expanded = false;
+        function showCheckboxes() {
+            var checkboxes = document.getElementById("checkboxes");
+            if (!expanded) {
+                checkboxes.style.display = "block";
+                expanded = true;
+            } else {
+                checkboxes.style.display = "none";
+                expanded = false;
+            }
+        }
+        function checkloginstatus() {
+            var data = { 'op': 'checkloginstatus' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "NotValid") {
+                        window.location = 'login.html';
+                    }
+                    else if (msg == "valid") {
+
+                    }
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            callHandler(data, s, e);
+        }
+        var sessionarray = [];
+        function getloginvalidation() {
+            var data = { 'op': 'Getsessionvalues' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg[0].LevelType == "AccountsOfficer" || msg[0].LevelType == "Director") {
+                        $('#liapvocher').css('display', 'block');
+                        //                        $('#tdapprove').css('display', 'block');
+                    }
+                    else {
+                        $('#liapvocher').css('display', 'none');
+                        //                        $('#tdapprove').css('display', 'none');
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function fillcsoroutes() {
+            var formtype = "sales";
+            var data = { 'op': 'GetCsodispatchRoutes', 'formtype': formtype };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "login.html";
+                    }
+                    BindDispatchName(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function BindDispatchName(msg) {
+            document.getElementById('ddlsalesoffice').options.length = "";
+            var veh = document.getElementById('ddlsalesoffice');
+            var length = veh.options.length;
+            for (i = length - 1; i >= 0; i--) {
+                veh.options[i] = null;
+            }
+            var opt = document.createElement('option');
+            opt.innerHTML = "Select branchname";
+            opt.value = "";
+            veh.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i] != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].RouteName;
+                    opt.value = msg[i].rid;
+                    veh.appendChild(opt);
+                }
+            }
+        }
+        function weekwiseSalesReportsclick() {
+            $('#divcontrols').css('display', 'none');
+            $('#mydiv').css('display', 'block');
+            var weeklist = [];
+            var rows = $("#tblchk tr:gt(0)");
+            var rowsno = 1;
+            $("input:checkbox[class=checkedid]:checked").each(function () {
+                var weekno = $(this).val();
+                status = "P";
+                var abc = { week: weekno, status: status };
+                weeklist.push(abc);
+            });
+            var type = document.getElementById('ddltype').value;
+            var branchid = document.getElementById('ddlsalesoffice').value;
+            if (branchid == "Select branchname" || branchid == "") {
+                alert("Please Select branchname");
+                return false;
+            }
+            var data = { 'op': 'GetweekwiseSalevlue', 'wbranchid': branchid, 'type': type, 'weeklist': weeklist };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg.length > 0) {
+                        fillsalesvalue(msg);
+                        $('#mydiv').css('display', 'none');
+                        $('#divclose').css('display', 'block');
+                        $('#tbl_sale_value').css('display', 'block');
+                        $('#divtotal').css('display', 'block');
+                        $('#divcontrols').css('display', 'none');
+                    }
+                    else {
+                        alert("No data found");
+                        $('#mydiv').css('display', 'none');
+                        $('#divclose').css('display', 'none');
+                        $('#divcontrols').css('display', 'block');
+                        $('#divtotal').css('display', 'none');
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            CallHandlerUsingJson_POST(data, s, e);
+        }
+
+        function SalesReportsclick() {
+            
+            $('#divcontrols').css('display', 'none');
+            $('#mydiv').css('display', 'block');
+            var RouteName = "";
+            var startDate = "";
+            var endDate = "";
+            var startDate = $('#reportrange').data('daterangepicker').startDate.toString();
+            var endDate = $('#reportrange').data('daterangepicker').endDate.toString();
+            branchname = document.getElementById('ddlsalesoffice').value;
+           
+            if (branchname == "Select branchname" || branchname == "") {
+                alert("Please Select branchname");
+                return false;
+            }
+            var data = { 'op': 'GetSalevlue', 'branchname': branchname, 'startDate': startDate, 'endDate': endDate};
+            var s = function (msg) {
+                if (msg) {
+                    if (msg.length > 0) {
+                        fillsalesvalue(msg);
+                        $('#mydiv').css('display', 'none');
+                        $('#divclose').css('display', 'block');
+                        $('#tbl_sale_value').css('display', 'block');
+                        $('#divtotal').css('display', 'block');
+                    }
+                    else {
+                        alert("No data found");
+                        $('#mydiv').css('display', 'none');
+                        $('#divclose').css('display', 'none');
+                        $('#divcontrols').css('display', 'block');
+                        $('#divtotal').css('display', 'none');
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function fillsalesvalue(msg) {
+            $('#divSaleValue').css('display', 'block');
+            j = 1;
+            var BranchTable = [];
+            var delivaryqty = 0; var leaktot = 0; var returntot = 0; var totavgqty = 0; var grand_totavgqty = 0;
+            var gdelivaryqty = 0; var total = 0; var totsalevalue = 0; var gsalevalue = 0;
+            var results = '<div class="divcontainer" style="overflow:auto;"><table border="1" class="table table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="example2_info" style="font-size:10px;font-weight:bold;">';
+            var ddltype = msg[0].ddltype;
+            if (ddltype == "Daily") {
+                results += '<thead><tr><th scope="col">ProductName</th><th scope="col">Qty</th><th scope="col">Avg Qty</th></tr></thead></tbody>';
+            }
+            if (ddltype == "Weekly" || ddltype == "Weeks") {
+                results += '<thead><tr><th scope="col">Week No</th><th scope="col">Qty</th><th scope="col">Avg Qty</th></tr></thead></tbody>';
+            }
+            if (ddltype == "Monthly") {
+                results += '<thead><tr><th scope="col">Month</th><th scope="col">Qty</th><th scope="col">Avg Qty</th></tr></thead></tbody>';
+            }
+            var k = 1;
+            var l = 0;
+            var COLOR = ["#b3ffe6", "AntiqueWhite", "#daffff", "MistyRose", "Bisque"];
+            for (var i = 0; i < msg.length; i++) {
+                results += '<tr style="background-color:' + COLOR[l] + '">';
+                if (ddltype == "Daily") {
+                    if (BranchTable.indexOf(msg[i].categoeryname) == -1) {
+                        if (i == 0) {
+                        }
+                        else {
+
+                            results += '<tr>';
+                            //results += '<td scope="row" class="1" ></td>';
+                            // results += '<td scope="row" class="1"  style="font-size:18px;font-weight:bold;color:#006400;"></td>';
+                            results += '<td  class="2" style="font-size:18px;font-weight:bold;color:#006400;">Total</td>'
+                            results += '<td  class="tammountcls" style="font-size:18px;font-weight:bold;color:#006400;"><div style="float:right;padding-right: 5%;">' + parseFloat(delivaryqty).toFixed(2) + '<di></td>';
+                            results += '<td  class="tammountcls2" style="display:none;" style="font-size:18px;font-weight:bold;color:#006400;"><div style="float:right;padding-right: 5%;">' + parseFloat(totsalevalue).toFixed(2) + '</div></td>';
+                            results += '<td  class="tammountcls1" style="font-size:18px;font-weight:bold;color:#006400;"><div style="float:right;padding-right: 5%;">' + parseFloat(totavgqty).toFixed(2) + '</div></td></tr>';
+                            grand_totavgqty += parseFloat(totavgqty);
+                            gdelivaryqty += parseFloat(delivaryqty);
+                            gsalevalue += parseFloat(totsalevalue);
+                            totavgqty = 0;
+                            delivaryqty = 0;
+                            totsalevalue = 0;
+                        }
+                        totavgqty = 0;
+                        if (msg[i].categoeryname == msg[i].productname && msg[i].Deliverqty == 0) {
+                            results += '<tr>';
+                            // results += '<td scope="row" class="1"  style="font-size:18px;font-weight:bold;color:blue;">' + msg[i].categoeryname + '</td>';
+                            results += '<td><span style="font-size:18px;font-weight:bold;color:#006400;" onclick="btnClickCategoryId(\'' + msg[i].productid + '\');">' + msg[i].productname + '</span></td>';
+                            results += '<td  class="4"></td>';
+                            results += '<td style="display:none;" class="4"></td>';
+                            results += '<td class="5"></td></tr>';
+                            BranchTable.push(msg[i].categoeryname);
+                        }
+                        if (msg[i].Deliverqty > 0) {
+                            var Deliverqty = parseFloat(msg[i].Deliverqty).toFixed(2) || 0;
+                            var LeakQty = parseFloat(msg[i].LeakQty).toFixed(2) || 0;
+                            results += '<tr>';
+                            // results += '<td scope="row" class="1"  style="font-size:18px;font-weight:bold;color:blue;">' + msg[i].categoeryname + '</td>';
+                            results += '<td  onclick="btnClickProductId(\'' + msg[i].productid + '\');"><span style="text-decoration: underline;">' + msg[i].productname + '</span></td>';
+                            results += '<td  class="4"><div style="float:right;padding-right: 10%;">' + Deliverqty + '</div></td>';
+                            results += '<td style="display:none;" class="4">' + msg[i].salevalue + '</td>';
+                            results += '<td class="5"><div style="float:right;padding-right: 10%;">' + LeakQty + '</div></td></tr>';
+                            delivaryqty += parseFloat(msg[i].Deliverqty);
+                            totavgqty += parseFloat(msg[i].LeakQty);
+                            totsalevalue += parseFloat(msg[i].salevalue);
+                            grand_totavgqty += parseFloat(totavgqty);
+                            gdelivaryqty += parseFloat(delivaryqty);
+                            gsalevalue += parseFloat(totsalevalue);
+                            BranchTable.push(msg[i].categoeryname);
+                        }
+                    }
+                    else {
+                        results += '<tr>';
+                        //results += '<td scope="row" class="1" ></td>';
+                        var Deliverqty = parseFloat(msg[i].Deliverqty).toFixed(2) || 0;
+                        var LeakQty = parseFloat(msg[i].LeakQty).toFixed(2) || 0;
+                        results += '<td  onclick="btnClickProductId(\'' + msg[i].productid + '\');"><span style="text-decoration: underline;">' + msg[i].productname + '</span></td>';
+                        results += '<td  class="4"><div style="float:right;padding-right: 10%;">' + Deliverqty + '</div></td>';
+                        results += '<td style="display:none;" class="4">' + msg[i].salevalue + '</td>';
+                        results += '<td class="5"><div style="float:right;padding-right: 10%;">' + LeakQty + '<div></td></tr>';
+                        delivaryqty += parseFloat(msg[i].Deliverqty);
+                        totavgqty += parseFloat(msg[i].LeakQty);
+                        totsalevalue += parseFloat(msg[i].salevalue);
+                    }
+                }
+                if (ddltype == "Monthly") {
+                    results += '<tr>';
+                    results += '<td  class="2" style="text-decoration:underline; color:blue;" onclick="btnClickmonth(\'' + msg[i].month + '\');">' + msg[i].productname + '</td>';
+                    // results += '<td style="display:none;" onclick="btnClickProductId(\'' + msg[i].productid + '\');"><span style="text-decoration: underline;">' + msg[i].productid + '</span></td>';
+                    results += '<td  class="3" ><div style="float:right;padding-right: 5%;">' + parseFloat(msg[i].Deliverqty).toFixed(2) + '</div></td>';
+                    results += '<td  class="4" ><div style="float:right;padding-right: 5%;">' + parseFloat(msg[i].LeakQty).toFixed(2) + '</div></td>';
+                    results += '<td  class="5" style="display:none;">' + parseFloat(msg[i].ReturnQty) + '</td>';
+                    results += '<td  class="6" style="display:none;">' + msg[i].month + '</td>';
+                    results += '<td  class="7" style="display:none;">' + msg[i].fromdate + '</td>';
+                    results += '<td  class="8" style="display:none;">' + msg[i].todate + '</td>';
+                    //results += '<td data-title="ShortQty" class="6">' + msg[i].ShortQty + '</td>';
+                    results += '<td data-title="TotalQty" style="display:none;">' + parseFloat(msg[i].NetQty) + '</td></tr>'
+                    j++;
+                    l = l + 1;
+                    if (l == 4) {
+                        l = 0;
+                    }
+                    delivaryqty += parseFloat(msg[i].Deliverqty) || 0;
+                    leaktot += parseFloat(msg[i].LeakQty) || 0;
+                    returntot += parseFloat(msg[i].ReturnQty) || 0;
+                    total += parseFloat(msg[i].NetQty) || 0;
+                }
+                if (ddltype == "Weekly" || ddltype == "Weeks") {
+                    results += '<tr>';
+                    results += '<td  class="2">' + msg[i].productname + '</td>';
+                    // results += '<td style="display:none;" onclick="btnClickProductId(\'' + msg[i].productid + '\');"><span style="text-decoration: underline;">' + msg[i].productid + '</span></td>';
+                    results += '<td  class="3" ><div style="float:right;padding-right: 5%;">' + parseFloat(msg[i].Deliverqty).toFixed(2) + '</div></td>';
+                    results += '<td  class="4" ><div style="float:right;padding-right: 5%;">' + parseFloat(msg[i].LeakQty).toFixed(2) + '</div></td>';
+                    results += '<td  class="5" style="display:none;">' + parseFloat(msg[i].ReturnQty) + '</td>';
+                    results += '<td  class="6" style="display:none;">' + msg[i].month + '</td>';
+                    results += '<td  class="7" style="display:none;">' + msg[i].fromdate + '</td>';
+                    results += '<td  class="8" style="display:none;">' + msg[i].todate + '</td>';
+                    //results += '<td data-title="ShortQty" class="6">' + msg[i].ShortQty + '</td>';
+                    results += '<td data-title="TotalQty" style="display:none;">' + parseFloat(msg[i].NetQty) + '</td></tr>'
+                    j++;
+                    l = l + 1;
+                    if (l == 4) {
+                        l = 0;
+                    }
+                    delivaryqty += parseFloat(msg[i].Deliverqty) || 0;
+                    leaktot += parseFloat(msg[i].LeakQty) || 0;
+                    returntot += parseFloat(msg[i].ReturnQty) || 0;
+                    total += parseFloat(msg[i].NetQty) || 0;
+                }
+            }
+            if (ddltype == "Daily" ) {
+                results += '<tr>';
+                //                results += '<td scope="row" class="1" ></td>';
+                results += '<td scope="row" class="1" style="font-size:18px;font-weight:bold;color:#006400;" >Total</td>';
+                results += '<td  class="tammountcls" style="font-size:18px;font-weight:bold;color:#006400;"><div style="float:right;padding-right: 5%;">' + parseFloat(delivaryqty).toFixed(2) + '</div></td>';
+                results += '<td  class="tammountcls2" style="display:none;font-size:18px;font-weight:bold;color:#006400;"><div style="float:right;padding-right: 5%;">' + parseFloat(totsalevalue).toFixed(2) + '</div></td>';
+                results += '<td  class="tammountcls1" style="font-size:18px;font-weight:bold;color:#006400;"><div style="float:right;padding-right: 5%;">' + parseFloat(totavgqty).toFixed(2) + '<div></td></tr>';
+                results += '<tr>';
+                //results += '<td scope="row" class="1" ></td>';
+                results += '<td scope="row" class="1" style="font-size:18px;font-weight:bold;color:#B22222;" >Grand Total</td>';
+                results += '<td data-title="brandstatus" class="5"><div style="float:right;padding-right: 2%;"><span id="totalcls" class="badge bg-yellow" style="font-size:18px;font-weight:bold;color:#B22222;"></span></div></td>';
+                results += '<td data-title="brandstatus" style="display:none;" class="5"><div style="float:right;padding-right: 2%;"><span id="totalcls2" class="badge bg-yellow" style="font-size:18px;font-weight:bold;color:#B22222;"></span></div></td>';
+                results += '<td data-title="brandstatus" class="5"><div style="float:right;padding-right: 2%;"><span id="totalcls1" class="badge bg-yellow" style="font-size:18px;font-weight:bold;color:#B22222;"></span></div></td></tr>';
+                results += '</table></div>';
+                $("#divSaleValue").html(results);
+                grand_totavgqty = 0;
+                gdelivaryqty = 0;
+                gsalevalue = 0;
+                grandtotalinv();
+                grandtotalinv1();
+                grandtotalinv2();
+            }
+            if (ddltype == "Weekly" || ddltype == "Monthly" || ddltype == "Weeks") {
+                results += '<tr>';
+                results += '<td scope="row" class="1" style="font-size:18px;font-weight:bold;color:#B22222;" >Grand Total</td>';
+                results += '<td data-title="brandstatus" class="5"><div style="float:right;padding-right: 2%;"><span id="totaltoqtycls" class="bg-yellow" style="font-size: 20px;font-weight: bold;color: #B22222;">' + parseFloat(delivaryqty).toFixed(2) + '</div></span></td>';
+                results += '<td data-title="brandstatus" class="5"><div style="float:right;padding-right: 2%;"><span id="totalincrcls" class="bg-yellow" style="font-size: 20px;font-weight: bold;color: #B22222;">' + parseFloat(leaktot).toFixed(2) + '</div></span></td>';
+                results += '<td data-title="brandstatus" style="display:none;" class="5"><div style="float:right;padding-right: 2%;"><span id="totaldecrecls" class="bg-yellow" style="display:none;">' + parseFloat(returntot).toFixed(2) + '</div></span></td>';
+                results += '<td data-title="brandstatus" style="display:none;" class="5"><div style="float:right;padding-right: 2%;"><span id="totalincrperccls" class="bg-yellow"  style="font-size: 20px;font-weight: bold;color: #B22222;">' + parseFloat(total).toFixed(2) + '</div></span></td></tr>';
+                results += '</table></div>';
+                $("#divSaleValue").html(results);
+            }
+        }
+        function grandtotalinv() {
+            var totamount = 0;
+            $('.tammountcls').each(function (i, obj) {
+                var qtyclass = $(this).text();
+                if (qtyclass == "" || qtyclass == "0") {
+                }
+                else {
+                    totamount += parseFloat(qtyclass);
+                }
+            });
+            document.getElementById('totalcls').innerHTML = parseFloat(totamount).toFixed(2);
+        }
+        function grandtotalinv1() {
+            var totamount = 0;
+            $('.tammountcls1').each(function (i, obj) {
+                var qtyclass = $(this).text();
+                if (qtyclass == "" || qtyclass == "0") {
+                }
+                else {
+                    totamount += parseFloat(qtyclass);
+                }
+            });
+            document.getElementById('totalcls1').innerHTML = parseFloat(totamount).toFixed(2);
+        }
+
+        function grandtotalinv2() {
+            var totamount = 0;
+            $('.tammountcls2').each(function (i, obj) {
+                var qtyclass = $(this).text();
+                if (qtyclass == "" || qtyclass == "0") {
+                }
+                else {
+                    totamount += parseFloat(qtyclass);
+                }
+            });
+            document.getElementById('totalcls2').innerHTML = parseFloat(totamount).toFixed(2);
+        }
+        function btnClickmonth(month) {
+            var selecttype = "month";
+            var month = month;
+
+            var fromdate = $('#reportrange').data('daterangepicker').startDate.toString();
+            var todate = $('#reportrange').data('daterangepicker').endDate.toString();
+            var type = document.getElementById('ddltype').value;
+            var categoryid = "";
+            document.getElementById('lblcatid').innerHTML = month;
+            var branchid = document.getElementById('ddlsalesoffice').value;
+            var data = { 'op': 'GetmonthwiseSalevlue', 'branchid': branchid, 'selecttype': selecttype, 'month': month, 'fromdate': fromdate, 'todate': todate, 'categoryid': categoryid };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg.length > 0) {
+                        fillmonthsalesvalue(msg);
+                        $('#mydiv').css('display', 'none');
+                        $('#divclose').css('display', 'block');
+                        $('#tbl_sale_value').css('display', 'block');
+                        $('#divtotal').css('display', 'block');
+                        $('#divcontrols').css('display', 'none');
+                    }
+                    else {
+                        alert("No data found");
+                        $('#mydiv').css('display', 'none');
+                        $('#divclose').css('display', 'none');
+                        $('#divcontrols').css('display', 'block');
+                        $('#divtotal').css('display', 'none');
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function mnthCloseClick1() {
+            $('#divSaleValue').css('display', 'block');
+            $('#divMainmonthData').css('display', 'none');
+        }
+        function catmnthCloseClick1() {
+            $('#divSaleValue').css('display', 'block');
+            $('#divMainmonthData').css('display', 'block');
+            $('#divmnthproductdata').css('display', 'none');
+        }
+        function fillmonthsalesvalue(msg) {
+            $('#divSaleValue').css('display', 'block');
+            $('#divMainmonthData').css('display', 'block');
+            j = 1;
+            var BranchTable = [];
+            var branchid = document.getElementById('ddlsalesoffice').value;
+            var delivaryqty = 0; var leaktot = 0; var returntot = 0; var totavgqty = 0; var grand_totavgqty = 0;
+            var gdelivaryqty = 0; var total = 0; var totsalevalue = 0; var gsalevalue = 0;
+            var results = '<div class="divcontainer" style="overflow:auto;"><table border="1" class="table table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="example2_info" style="font-size:10px;font-weight:bold;">';
+            var ddltype = msg[0].ddltype;
+            if (ddltype == "Weekly" || ddltype == "Weeks") {
+                results += '<thead><tr><th scope="col">Category Name</th><th scope="col">Qty</th><th scope="col">Avg Qty</th></tr></thead></tbody>';
+            }
+            var k = 1;
+            var l = 0;
+            var branchid = document.getElementById('ddlsalesoffice').value
+            var COLOR = ["#b3ffe6", "AntiqueWhite", "#daffff", "MistyRose", "Bisque"];
+            for (var i = 0; i < msg.length; i++) {
+                results += '<tr style="background-color:' + COLOR[l] + '">';
+                if (ddltype == "Weekly" || ddltype == "Monthly" || ddltype == "Weeks") {
+                    results += '<tr>';
+//                    if (branchid == "1" && msg[i].catid != "null") {
+//                        results += '<td  class="2">' + msg[i].productname + '</td>';
+//                        // results += '<td style="display:none;" onclick="btnClickProductId(\'' + msg[i].productid + '\');"><span style="text-decoration: underline;">' + msg[i].productid + '</span></td>';
+//                        results += '<td  class="3" ><div style="float:right;padding-right: 5%;">' + parseFloat(msg[i].Deliverqty).toFixed(2) + '</div></td>';
+//                        results += '<td  class="4" ><div style="float:right;padding-right: 5%;">' + parseFloat(msg[i].LeakQty).toFixed(2) + '</div></td>';
+//                        results += '<td  class="5" style="display:none;">' + parseFloat(msg[i].ReturnQty) + '</td>';
+//                        results += '<td  class="6" style="display:none;">' + msg[i].month + '</td>';
+//                        results += '<td  class="7" style="display:none;">' + msg[i].fromdate + '</td>';
+//                        results += '<td  class="8" style="display:none;">' + msg[i].todate + '</td>';
+//                        //results += '<td data-title="ShortQty" class="6">' + msg[i].ShortQty + '</td>';
+//                        results += '<td data-title="TotalQty" style="display:none;">' + parseFloat(msg[i].NetQty) + '</td></tr>'
+//                        j++;
+//                        l = l + 1;
+//                        if (l == 4) {
+//                            l = 0;
+//                        }
+//                        delivaryqty += parseFloat(msg[i].Deliverqty) || 0;
+//                        leaktot += parseFloat(msg[i].LeakQty) || 0;
+//                        returntot += parseFloat(msg[i].ReturnQty) || 0;
+//                        total += parseFloat(msg[i].NetQty) || 0;
+//                    }
+//                    else {
+                        results += '<td  class="2" style="text-decoration:underline; color:blue;"onclick="btnClickmcatid(\'' + msg[i].catid + '\');">' + msg[i].productname + '</td>';
+                        // results += '<td style="display:none;" onclick="btnClickProductId(\'' + msg[i].productid + '\');"><span style="text-decoration: underline;">' + msg[i].productid + '</span></td>';
+                        results += '<td  class="3" ><div style="float:right;padding-right: 5%;">' + parseFloat(msg[i].Deliverqty).toFixed(2) + '</div></td>';
+                        results += '<td  class="4" ><div style="float:right;padding-right: 5%;">' + parseFloat(msg[i].LeakQty).toFixed(2) + '</div></td>';
+                        results += '<td  class="5" style="display:none;">' + parseFloat(msg[i].ReturnQty) + '</td>';
+                        results += '<td  class="6" style="display:none;">' + msg[i].month + '</td>';
+                        results += '<td  class="7" style="display:none;">' + msg[i].fromdate + '</td>';
+                        results += '<td  class="8" style="display:none;">' + msg[i].todate + '</td>';
+                        //results += '<td data-title="ShortQty" class="6">' + msg[i].ShortQty + '</td>';
+                        results += '<td data-title="TotalQty" style="display:none;">' + parseFloat(msg[i].NetQty) + '</td></tr>'
+                        j++;
+                        l = l + 1;
+                        if (l == 4) {
+                            l = 0;
+                        }
+                        delivaryqty += parseFloat(msg[i].Deliverqty) || 0;
+                        leaktot += parseFloat(msg[i].LeakQty) || 0;
+                        returntot += parseFloat(msg[i].ReturnQty) || 0;
+                        total += parseFloat(msg[i].NetQty) || 0;
+//                    }
+                }
+            }
+            if (ddltype == "Weekly" || ddltype == "Monthly" || ddltype == "Weeks") {
+                results += '<tr>';
+                results += '<td scope="row" class="1" style="font-size:18px;font-weight:bold;color:#B22222;" >Grand Total</td>';
+                results += '<td data-title="brandstatus" class="5"><div style="float:right;padding-right: 2%;"><span id="totaltoqtycls" class="bg-yellow" style="font-size: 20px;font-weight: bold;color: #B22222;">' + parseFloat(delivaryqty).toFixed(2) + '</div></span></td>';
+                results += '<td data-title="brandstatus" class="5"><div style="float:right;padding-right: 2%;"><span id="totalincrcls" class="bg-yellow" style="font-size: 20px;font-weight: bold;color: #B22222;">' + parseFloat(leaktot).toFixed(2) + '</div></span></td>';
+                results += '<td data-title="brandstatus" style="display:none;" class="5"><div style="float:right;padding-right: 2%;"><span id="totaldecrecls" class="bg-yellow" style="display:none;">' + parseFloat(returntot).toFixed(2) + '</div></span></td>';
+                results += '<td data-title="brandstatus" style="display:none;" class="5"><div style="float:right;padding-right: 2%;"><span id="totalincrperccls" class="bg-yellow"  style="font-size: 20px;font-weight: bold;color: #B22222;">' + parseFloat(total).toFixed(2) + '</div></span></td></tr>';
+                results += '</table></div>';
+                $("#divmonthsalevalue").html(results);
+            }
+        }
+        function fillmonthcatwisesalesvalue(msg) {
+            $('#divSaleValue').css('display', 'block');
+            $('#divMainmonthData').css('display', 'block');
+            j = 1;
+            var BranchTable = [];
+            var delivaryqty = 0; var leaktot = 0; var returntot = 0; var totavgqty = 0; var grand_totavgqty = 0;
+            var gdelivaryqty = 0; var total = 0; var totsalevalue = 0; var gsalevalue = 0;
+            var results = '<div class="divcontainer" style="overflow:auto;"><table border="1" class="table table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="example2_info" style="font-size:10px;font-weight:bold;">';
+            var ddltype = msg[0].ddltype;
+            if (ddltype == "Weekly" || ddltype == "Weeks") {
+                results += '<thead><tr><th scope="col">Product Name</th><th scope="col">Qty</th><th scope="col">Avg Qty</th></tr></thead></tbody>';
+            }
+            var k = 1;
+            var l = 0;
+            var COLOR = ["#b3ffe6", "AntiqueWhite", "#daffff", "MistyRose", "Bisque"];
+            for (var i = 0; i < msg.length; i++) {
+                results += '<tr style="background-color:' + COLOR[l] + '">';
+                if (ddltype == "Weekly" || ddltype == "Monthly" || ddltype == "Weeks") {
+                    results += '<tr>';
+                    results += '<td  class="2" onclick="btnClickmcatid(\'' + msg[i].catid + '\');">' + msg[i].productname + '</td>';
+                    // results += '<td style="display:none;" onclick="btnClickProductId(\'' + msg[i].productid + '\');"><span style="text-decoration: underline;">' + msg[i].productid + '</span></td>';
+                    results += '<td  class="3" ><div style="float:right;padding-right: 5%;">' + parseFloat(msg[i].Deliverqty).toFixed(2) + '</div></td>';
+                    results += '<td  class="4" ><div style="float:right;padding-right: 5%;">' + parseFloat(msg[i].LeakQty).toFixed(2) + '</div></td>';
+                    results += '<td  class="5" style="display:none;">' + parseFloat(msg[i].ReturnQty) + '</td>';
+                    results += '<td  class="6" style="display:none;">' + msg[i].month + '</td>';
+                    results += '<td  class="7" style="display:none;">' + msg[i].fromdate + '</td>';
+                    results += '<td  class="8" style="display:none;">' + msg[i].todate + '</td>';
+                    //results += '<td data-title="ShortQty" class="6">' + msg[i].ShortQty + '</td>';
+                    results += '<td data-title="TotalQty" style="display:none;">' + parseFloat(msg[i].NetQty) + '</td></tr>'
+                    j++;
+                    l = l + 1;
+                    if (l == 4) {
+                        l = 0;
+                    }
+                    delivaryqty += parseFloat(msg[i].Deliverqty) || 0;
+                    leaktot += parseFloat(msg[i].LeakQty) || 0;
+                    returntot += parseFloat(msg[i].ReturnQty) || 0;
+                    total += parseFloat(msg[i].NetQty) || 0;
+                }
+            }
+            if (ddltype == "Weekly" || ddltype == "Monthly" || ddltype == "Weeks") {
+                results += '<tr>';
+                results += '<td scope="row" class="1" style="font-size:18px;font-weight:bold;color:#B22222;" >Grand Total</td>';
+                results += '<td data-title="brandstatus" class="5"><div style="float:right;padding-right: 2%;"><span id="totaltoqtycls" class="bg-yellow" style="font-size: 20px;font-weight: bold;color: #B22222;">' + parseFloat(delivaryqty).toFixed(2) + '</div></span></td>';
+                results += '<td data-title="brandstatus" class="5"><div style="float:right;padding-right: 2%;"><span id="totalincrcls" class="bg-yellow" style="font-size: 20px;font-weight: bold;color: #B22222;">' + parseFloat(leaktot).toFixed(2) + '</div></span></td>';
+                results += '<td data-title="brandstatus" style="display:none;" class="5"><div style="float:right;padding-right: 2%;"><span id="totaldecrecls" class="bg-yellow" style="display:none;">' + parseFloat(returntot).toFixed(2) + '</div></span></td>';
+                results += '<td data-title="brandstatus" style="display:none;" class="5"><div style="float:right;padding-right: 2%;"><span id="totalincrperccls" class="bg-yellow"  style="font-size: 20px;font-weight: bold;color: #B22222;">' + parseFloat(total).toFixed(2) + '</div></span></td></tr>';
+                results += '</table></div>';
+                $("#divmnthsaleproductdata").html(results);
+            }
+        }
+        function btnClickmcatid(catid) {
+            $('#divSaleValue').css('display', 'block');
+            $('#divMainmonthData').css('display', 'block');
+            $('#divmnthproductdata').css('display', 'block');
+             
+            var selecttype = "month";
+            var month = document.getElementById('lblcatid').innerHTML;
+            var fromdate = $('#reportrange').data('daterangepicker').startDate.toString();
+            var todate = $('#reportrange').data('daterangepicker').endDate.toString();
+            var type = document.getElementById('ddltype').value;
+            var categoryid = catid;
+            var branchid = document.getElementById('ddlsalesoffice').value;
+            var data = { 'op': 'GetmonthwiseSalevlue', 'branchid': branchid, 'selecttype': selecttype, 'month': month, 'fromdate': fromdate, 'todate': todate, 'categoryid': categoryid };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg.length > 0) {
+                        fillmonthcatwisesalesvalue(msg);
+                        $('#mydiv').css('display', 'none');
+                        $('#divclose').css('display', 'block');
+                        $('#tbl_sale_value').css('display', 'block');
+                        $('#divtotal').css('display', 'block');
+                        $('#divcontrols').css('display', 'none');
+                    }
+                    else {
+                        alert("No data found");
+                        $('#mydiv').css('display', 'none');
+                        $('#divclose').css('display', 'none');
+                        $('#divcontrols').css('display', 'block');
+                        $('#divtotal').css('display', 'none');
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function btnClickProductId(productid) {
+            var productid;
+            var startDate = $('#reportrange').data('daterangepicker').startDate.toString();
+            var endDate = $('#reportrange').data('daterangepicker').endDate.toString();
+            branchname = document.getElementById('ddlsalesoffice').value;
+            var data = { 'op': 'get_BranchWiseProductsData', 'productid': productid, 'startDate': startDate, 'endDate': endDate, 'branchname': branchname };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg) {
+                        $('#divMainAddNewRow').css('display', 'none');
+                        fillbranchwiseproductsdata(msg);
+                    }
+                    else {
+                    }
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function fillbranchwiseproductsdata(msg) {
+            $('#divMainAddNewRow').css('display', 'block');
+            $('#hiddeninward').css('display', 'none');
+            $('#hiddenoutward').css('display', 'none');
+            j = 1;
+            var pdelivaryqty = 0; var psalevalue = 0;
+            var results = '<div  style="overflow:auto;"><table class="table table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="example2_info">';
+            results += '<thead><tr><th scope="col">BranchName</th><th scope="col">DelivaryQty</th></tr></thead></tbody>';
+            var k = 1;
+            var l = 0;
+            var COLOR = ["#b3ffe6", "AntiqueWhite", "#daffff", "MistyRose", "Bisque"];
+            for (var i = 0; i < msg.length; i++) {
+                var Deliverqty = parseFloat(msg[i].Deliverqty).toFixed(2) || 0;
+                var salevalue = parseFloat(msg[i].salevalue).toFixed(2);
+                results += '<tr style="background-color:' + COLOR[l] + '">';
+                results += '<td scope="row" style="display:none;"  class="1" >' + msg[i].Branchid + '</td>';
+                results += '<td scope="row"  onclick="btnClickProductId(\'' + msg[i].produtandBranchid + '\');" class="2" >' + msg[i].BranchName + '</th>';
+                results += '<td scope="row" class="2" ><div style="float:right;padding-right: 10%;">' + Deliverqty + '</div></th>';
+                results += '<td data-title="brandstatus" style="display:none;"  class="3"><div style="float:right;padding-right: 10%;">' + salevalue + '</div></td></tr>';
+                l = l + 1;
+                if (l == 4) {
+                    l = 0;
+                }
+                pdelivaryqty += parseFloat(msg[i].Deliverqty) || 0;
+                psalevalue += parseFloat(msg[i].salevalue) || 0;
+            }
+            results += '<tr>';
+            results += '<td scope="row" class="1">Total</td>';
+            results += '<td scope="row" class="1" style="font-size:18px;font-weight:bold;color:#006400;" ><div style="float:right;padding-right: 7%;">' + parseFloat(pdelivaryqty).toFixed(2) + '</div></td>';
+            results += '<td   style="display:none;font-size:18px;font-weight:bold;color:#006400;"><div style="float:right;padding-right: 7%;">' + parseFloat(psalevalue).toFixed(2) + '</div></td></tr>';
+            results += '</table></div>';
+            $("#Show_BranchWiseProduct").html(results);
+        }
+        function btnClickCategoryId(categoryid) {
+            var categoryid;
+            var startDate = $('#reportrange').data('daterangepicker').startDate.toString();
+            var endDate = $('#reportrange').data('daterangepicker').endDate.toString();
+            var branchname = document.getElementById('ddlsalesoffice').value;
+            var data = { 'op': 'GetCategoryWiseChart', 'startDate': startDate, 'endDate': endDate, 'categoryid': categoryid, 'branchname': branchname };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location.assign("Login.aspx");
+                    }
+                    else {
+                        if (msg.length > 0) {
+                            createpieChart(msg);
+                        }
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        var newXarray = [];
+        var tbldata=[];
+        function createpieChart(databind) {
+            $('#divMainPieCharData').css('display', 'block');
+            $("#chart").empty();
+            newXarray = [];
+            var textname = "";
+            //var totalqty = databind[0].totalqty;
+            var Amount = databind[0].Amount;
+            var DeliveryQty = databind[0].DeliveryQty;
+            var AverageyQty = databind[0].AverageyQty;
+            var RouteName = databind[0].RouteName;
+
+            tbldata = databind[0].PieValueTableClass
+
+            var catidandBranchid = databind[0].catidandBranchid;
+            var myTableDiv = document.getElementById("example");
+            var divleakbar = document.createElement("div");
+            divleakbar.style.height = "300px";
+            divleakbar.setAttribute("id", "id_you_like");
+            myTableDiv.appendChild(divleakbar);
+
+            var divleakbar1 = document.createElement("div");
+            divleakbar1.style.height = "300px";
+            divleakbar1.setAttribute("id", "id_table_data");
+            myTableDiv.appendChild(divleakbar1);
+            var color = ["#FF0F00", "#FF6600", "#FF9E01", "#FCD202", "#F8FF01", "#F8FF01", "#B0DE09", "#04D215", "#0D8ECF", "#40ff00", "#00ff40", " #00ff80", " #00ffff", " #0080ff", "#0D52D1", "#2A0CD0", "#8A0CCF", "#CD0D74", "#754DEB", "#DDDDDD", "#999999", "#333333", "#000000"];
+            for (var i = 0; i < RouteName.length; i++) {
+                newXarray.push({ "category": RouteName[i], "value": parseFloat(Amount[i]), "catidandBranchid": catidandBranchid[i], "color": color[i] });
+            }
+            var chart = AmCharts.makeChart("id_you_like", {
+                "type": "pie",
+                "startDuration": 0,
+                "theme": "light",
+                "addClassNames": true,
+                "labelRadius": -35,
+                "labelText": "",
+                "legend": {
+                    "align": "right",
+                    "position": "bottom",
+                    "marginRight": 21,
+                    "markerType": "circle",
+                    "right": -20,
+                    "labelText": "[[title]]",
+                    "valueText": "[[percents]]",
+                    //"useGraphSettings": true,
+                    "valueWidth": 80,
+                    "textClickEnabled": true,
+                    "labelsEnabled": true,
+                    "autoMargins": false,
+                    "marginTop": 0,
+                    "marginBottom": 0,
+                    "marginLeft": 0,
+                    "marginRight": 0,
+                    "pullOutRadius": 0,
+                    fontSize: 9,
+                    fontweight: "bold"
+                },
+                "innerRadius": "30%",
+                "defs": {
+                    "filter": [{
+                        "id": "shadow",
+                        "width": "200%",
+                        "height": "200%",
+                        "feOffset": {
+                            "result": "offOut",
+                            "in": "SourceAlpha",
+                            "dx": 0,
+                            "dy": 0
+                        },
+                        "feGaussianBlur": {
+                            "result": "blurOut",
+                            "in": "offOut",
+                            "stdDeviation": 5
+                        },
+                        "feBlend": {
+                            "in": "SourceGraphic",
+                            "in2": "blurOut",
+                            "mode": "normal"
+                        }
+                    }]
+                },
+                "dataProvider": newXarray,
+                "valueField": "value",
+                "colorField": "color",
+                "titleField": "category",
+                "export": {
+                    "enabled": true
+                },
+                "listeners": [{
+                    "event": "clickSlice",
+                    "method": function (e) {
+                        var dp = e.dataItem.dataContext.catidandBranchid;
+                        btnClickCategoryId(dp);
+                    }
+                }]
+            });
+
+            var results = '<div  style="overflow:auto;"><table class="table table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="example2_info">';
+            results += '<thead><tr><th scope="col">BranchName</th><th scope="col">DelivaryQty</th><th scope="col">AvgQty</th></tr></thead></tbody>';
+            var k = 1;
+            var l = 0;
+            var Color = ["#FF0F00", "#FF6600", "#FF9E01", "#FCD202", "#F8FF01", "#F8FF01", "#B0DE09", "#04D215", "#0D8ECF", "#40ff00", "#00ff40", " #00ff80", " #00ffff", " #0080ff", "#0D52D1", "#2A0CD0", "#8A0CCF", "#CD0D74", "#754DEB", "#DDDDDD", "#999999", "#333333", "#000000"];
+            for (var i = 0; i < tbldata.length; i++) {
+                results += '<tr style="background-color:' + Color[l] + '">';
+                results += '<td scope="row" onclick="btnClickCategoryId(\'' + tbldata[i].Routeid + '\');"  class="2" >' + tbldata[i].RouteName + '</th>';
+                results += '<td scope="row" class="2" ><div style="float:right;padding-right: 10%;">' + tbldata[i].DeliveryQty + '</div></th>';
+                results += '<td data-title="brandstatus"   class="3"><div style="float:right;padding-right: 10%;">' + tbldata[i].AverageyQty + '</div></td></tr>';
+                l = l + 1;
+                //                if (l == 4) {
+                //                    l = 0;
+                //                }
+                DeliveryQty += parseFloat(tbldata[i].DeliveryQty) || 0;
+                AverageyQty += parseFloat(tbldata[i].AverageyQty) || 0;
+            }
+            results += '<tr>';
+            results += '<td scope="row" class="1">Total</td>';
+            results += '<td scope="row" class="1" style="font-size:18px;font-weight:bold;color:#006400;" ><div style="float:right;padding-right: 7%;">' + parseFloat(DeliveryQty).toFixed(2) + '</div></td>';
+            results += '<td   style="display:none;font-size:18px;font-weight:bold;color:#006400;"><div style="float:right;padding-right: 7%;">' + parseFloat(AverageyQty).toFixed(2) + '</div></td></tr>';
+            results += '</table></div>';
+            $("#id_table_data").html(results);
+        }
+        function CloseClick() {
+            $('#divMainAddNewRow').css('display', 'none');
+            $('#divSaleValue').css('display', 'block');
+        }
+        function CloseClick1() {
+            $('#divMainPieCharData').css('display', 'none');
+            $('#divSaleValue').css('display', 'block');
+        }
+        function logoutclick() {
+            var data = { 'op': 'log_out' };
+            var s = function (msg) {
+                if (msg == "Valid") {
+                    window.location = 'login.html';
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            callHandler(data, s, e);
+        }
+        function callHandler(d, s, e) {
+            $.ajax({
+                url: 'Bus.axd',
+                data: d,
+                type: 'GET',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                async: true,
+                cache: true,
+                success: s,
+                error: e
+            });
+        }
+        function CallHandlerUsingJson_POST(d, s, e) {
+            d = JSON.stringify(d);
+            d = encodeURIComponent(d);
+            $.ajax({
+                type: "POST",
+                url: "Bus.axd",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: d,
+                async: true,
+                cache: true,
+                success: s,
+                error: e
+            });
+        }
+        function homeclick() {
+            window.location = "home.html";
+        }
+        function Indentclick() {
+            window.location = "Indent.html";
+        }
+        function Salesclick() {
+            window.location = "sales.html";
+        }
+        function dcclick() {
+            window.location = "dcreport.html";
+        }
+        function balanceclick() {
+            window.location = "ClosingStock.html";
+        }
+        function lekageclick() {
+            window.location = "lekages.html";
+        }
+        function cratesclick() {
+            window.location = "crates.html";
+        }
+        function cashclick() {
+            window.location = "cashbook.html";
+        }
+        function approvalvoucherclick() {
+            window.location = "VoucherApproval.html";
+        }
+        function closeclick() {
+            $('#mydiv').css('display', 'none');
+            $('#divclose').css('display', 'none');
+            $('#divcontrols').css('display', 'block');
+            $('#tbl_sale_value').css('display', 'none');
+            $('#divtotal').css('display', 'none');
+            $('#divSaleValue').css('display', 'none');
+        }
+        function typechange() {
+            var type = document.getElementById('ddltype').value;
+            if (type == "Weeks") {
+                $('#bitweenweeks').css('display', 'block');
+                $('#ddldaterange').css('display', 'none');
+                $('#btnweekrange').css('display', 'block');
+                $('#btndaterange').css('display', 'none');
+            }
+            else {
+                $('#bitweenweeks').css('display', 'none');
+                $('#ddldaterange').css('display', 'block');
+                $('#btnweekrange').css('display', 'none');
+                $('#btndaterange').css('display', 'block');
+            }
+        }
+        $(function () {
+            var start = moment().subtract(29, 'days');
+            var end = moment();
+            function cb(start, end) {
+                $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
+            }
+            $.noConflict();
+            jQuery(document).ready(function ($) {
+                $("#reportrange").daterangepicker()
+            });
+            $('#reportrange').daterangepicker({
+                startDate: start,
+                endDate: end,
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    //                    'startOfWeek' :[ moment().startOf('week').toDate()],
+                    //                     'endOfWeek ' :[moment().endOf('week').toDate()],
+                    //                    'FromWeak': [moment().subtract(7, 'weak'), moment()],
+                    //                    'LastWeak': [moment().subtract(7, 'weak'), moment()],
+                    //                     'lastWeek':[moment().isoWeek(moment().subtract(1,'w').week())],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                }
+            }, cb);
+            cb(start, end);
+        });
+
+
+    </script>
+    <style type="text/css">
+        .multiselect
+        {
+            width: 200px;
+        }
+        
+        .selectBox
+        {
+            position: relative;
+        }
+        
+        .selectBox select
+        {
+            width: 100%;
+            font-weight: bold;
+        }
+        
+        .overSelect
+        {
+            position: absolute;
+            left: 0;
+            right: 0;
+            top: 0;
+            bottom: 0;
+        }
+        #checkboxes
+        {
+            display: none;
+            border: 1px #dadada solid;
+        }
+        
+        #checkboxes label
+        {
+            display: block;
+        }
+        
+        #checkboxes label:hover
+        {
+            background-color: #1e90ff;
+        }
+    </style>
+</head>
+<body style="background: whitesmoke !important;">
+    <!-- Pushy Menu -->
+    <nav class="pushy pushy-left">
+        <ul>
+            <li class="home-icon"><a href="#" onclick="homeclick();">&nbsp&nbsp Home</a></li>
+            <li class="about-icon"><a href="#" onclick="Indentclick();">&nbsp&nbsp Indent</a></li>
+            <li class="features-icon"><a href="#" onclick="Salesclick();">&nbsp&nbsp Sales</a></li>
+            <li class="photos-icon"><a href="#" onclick="dcclick();">&nbsp&nbsp DC Report</a></li>
+            <li class="video-icon"><a href="#" onclick="balanceclick();">&nbsp&nbsp Closing Stock
+                Report</a></li>
+            <li class="blog-icon"><a href="#" onclick="lekageclick();">&nbsp&nbsp Lekages</a></li>
+            <li class="contact-icon"><a href="#" onclick="cratesclick();">&nbsp&nbsp Inventory</a></li>
+            <li class="cash-icon"><a href="#" onclick="cashclick();">&nbsp&nbsp Cash Book</a></li>
+            <li id="liapvocher" class="approve-icon"><a href="#" onclick="approvalvoucherclick();">&nbsp&nbsp Approval
+                Voucher</a></li>
+            <li class="logout-icon"><a href="#" onclick="logoutclick();">&nbsp&nbsp Logout</a></li>
+        </ul>
+    </nav>
+    <!-- Site Overlay -->
+    <div class="site-overlay">
+    </div>
+    <!-- Your Content -->
+    <div id="container">
+        <!-- Menu Button -->
+        <div class="menu-btn">
+            &#9776; Menu</div>
+        <div style="padding: 13px; padding-left: 36px; color: #2a70bb; text-align: left;
+            cursor: pointer; font-size: 25px;">
+            <i class="fa fa-life-ring" aria-hidden="true"></i>Sales Report</div>
+        <!-- table code-->
+        <form role="form">
+        <div id="divcontrols" class="box-body">
+            <div class="form-group">
+               <!-- <label for="exampleInputEmail1">
+                    Branch Name:</label>-->
+                <select class="form-control" id="ddlsalesoffice">
+                </select>
+            </div>
+            <div class="form-group">
+              <!--  <label for="exampleInputEmail1">
+                   Type:</label>-->
+                 <select class="form-control" id="ddltype" onchange="typechange();">
+                 <option>Select Type</option>
+                 <option value="Weeks">Bitween Weeks</option>
+                 <option value="Daterange">Date Range</option>
+                </select>
+            </div>
+            <div class="form-group" id="bitweenweeks" style="display:none;">
+            <table style="width:100%;"><tr><td style="width:30%;"><div class="multiselect" style="width:97% !important;">
+                    <div class="selectBox" onclick="showCheckboxes()">
+                        <select class="form-control">
+                            <option>Select Week</option>
+                        </select>
+                        <div class="overSelect">
+                        </div>
+                    </div>
+                    <div id="checkboxes">
+                    </div>
+                </div></td><td style="float: left;"><div id="btnweekrange" class="box-footer" style="text-align: center; display:none;">
+                <input id="Button2" type="button" class="btn btn-primary" name="submit" value="Genarate"
+                    onclick="return weekwiseSalesReportsclick();">
+            </div></td></tr></table>
+            </div>
+            <div class="form-group" id="ddldaterange">
+                <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer;
+                    padding: 5px 10px; border: 1px solid #ccc; width: 100%">
+                    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>&nbsp; <span></span><b
+                        class="caret"></b>
+                </div>
+            </div>
+            <!--<div class="form-group">
+                <label for="exampleInputEmail1">
+                   Type:</label>
+                 <select class="form-control" id="ddltype">
+                 <option>Daily</option>
+                 <option>Weekly</option>
+                 <option>Monthly</option>
+                </select>
+            </div>
+            </div>
+            <div class="form-group">
+                <label for="exampleInputEmail1">
+                    From Date:</label>
+                <input type="date" name="ContactName" id="txtFromDate" class="form-control" />
+            </div>
+            <div class="form-group">
+                <label for="exampleInputFile">
+                    To Date</label>
+                <input type="date" name="ContactName" id="txtToDate" class="form-control" />
+            </div>-->
+            <div id="btndaterange" class="box-footer" style="text-align: center;">
+                <input id="btn_save" type="button" class="btn btn-primary" name="submit" value="Genarate"
+                    onclick="return SalesReportsclick();">
+            </div>
+            <label id="lblcatid" style="display:none;"></label>
+            
+        </div>
+        <div id="mydiv" style="display: none;">
+            <img src="images/loading.gif" alt="Loading..." id="LoadingGraphic" class="ajax-loader" />
+        </div>
+        <div id="divclose" style="text-align: right;">
+            <input id="Button1" type="button" class="btn btn-primary" name="submit" value="Close"
+                onclick="closeclick();"></div>
+        <div id="divSaleValue">
+        </div>
+        <div id="divMainAddNewRow" class="pickupclass" style="text-align: center; height: 100%;
+            width: 100%; position: absolute; display: none; left: 0%; top: 0%; z-index: 99999;
+            background: rgba(192, 192, 192, 0.7);">
+            <div id="divAddNewRow" style="border: 5px solid #A0A0A0; position: absolute; top: 8%;
+                background-color: White; left: 10%; right: 10%; -webkit-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+                -moz-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65); box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+                border-radius: 10px 10px 10px 10px;">
+                <table align="left" cellpadding="0" cellspacing="0" style="float: left; width: 100%;"
+                    id="tableCollectionDetails" class="mainText2" border="1">
+                    <tr>
+                        <td colspan="2">
+                            <div id="Show_BranchWiseProduct">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input type="button" class="btn btn-danger" id="close_vehmaster" value="Close" onclick="CloseClick();" />
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            >
+            <div id="div1" style="width: 35px; top: 7.5%; right: 10%; position: absolute; z-index: 99999;
+                cursor: pointer;">
+                <img src="Images/Close.png" alt="close" width="100%" height="100%" onclick="CloseClick();" />
+            </div>
+        </div>
+        <div id="divMainPieCharData" class="pickupclass" style="height: 100%; width: 100%;
+            position: absolute; display: none; left: 0%; top: 0%; z-index: 99999; background: rgba(192, 192, 192, 0.7);">
+            <div id="divAddPieChart" style="border: 5px solid #A0A0A0; position: absolute; top: 8%;
+                background-color: White; left: 10%; right: 10%; -webkit-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+                -moz-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65); box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+                border-radius: 10px 10px 10px 10px;">
+                <div id="example">
+                    <div class="chart-wrapper" style="margin: auto;">
+                        <div id="chart">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="div5" style="width: 35px; top: 7.5%; right: 10%; position: absolute; z-index: 99999;
+                cursor: pointer;">
+                <img src="Images/Close.png" alt="close" width="100%" height="100%" onclick="CloseClick1();" />
+            </div>
+        </div>
+
+
+        <div id="divMainmonthData" class="pickupclass" style="height: 100%; width: 100%;
+            position: absolute; display: none; left: 0%; top: 0%; z-index: 99999; background: rgba(192, 192, 192, 0.7);">
+            <div id="div3" style="border: 5px solid #A0A0A0; position: absolute; top: 8%;
+                background-color: White; left: 10%; right: 10%; -webkit-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+                -moz-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65); box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+                border-radius: 10px 10px 10px 10px;">
+                <div id="Div4">
+                    <div class="chart-wrapper" style="margin: auto;">
+                        <div id="divmonthsalevalue">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="div7" style="width: 35px; top: 7.5%; right: 10%; position: absolute; z-index: 99999;
+                cursor: pointer;">
+                <img src="Images/Close.png" alt="close" width="100%" height="100%" onclick="mnthCloseClick1();" />
+            </div>
+        </div>
+       
+
+        <div id="divmnthproductdata" class="pickupclass" style="height: 100%; width: 100%;
+            position: absolute; display: none; left: 0%; top: 0%; z-index: 99999; background: rgba(192, 192, 192, 0.7);">
+            <div id="div6" style="border: 5px solid #A0A0A0; position: absolute; top: 8%;
+                background-color: White; left: 10%; right: 10%; -webkit-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+                -moz-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65); box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+                border-radius: 10px 10px 10px 10px;">
+                <div id="Div8">
+                    <div class="chart-wrapper" style="margin: auto;">
+                        <div id="divmnthsaleproductdata">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="div10" style="width: 35px; top: 7.5%; right: 10%; position: absolute; z-index: 99999;
+                cursor: pointer;">
+                <img src="Images/Close.png" alt="close" width="100%" height="100%" onclick="catmnthCloseClick1();" />
+            </div>
+        </div>
+        </form>
+    </div>
+    <!-- Pushy JS -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script src="js/pushy.min.js"></script>
+    <script type="text/javascript">
+
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-36251023-1']);
+        _gaq.push(['_setDomainName', 'jqueryscript.net']);
+        _gaq.push(['_trackPageview']);
+        (function () {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+
+    </script>
+</body>
+</html>

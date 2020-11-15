@@ -1,0 +1,1616 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html class="no-js">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <title>Sales App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/demo.css" />
+    <!-- Pushy CSS -->
+    <link rel="stylesheet" href="css/pushy.css" />
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="CustomCSS/custom.css" rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+    <link href="CustomCSS/font-awesome.css" rel="stylsesheet" type="text/css" />
+    <!-- jQuery -->
+    <!-- Modernizr -->
+    <script src="js/jquery-1.7.1.min.js" type="text/javascript"></script>
+    <script src="js/vendor/modernizr-2.6.2.min.js"></script>
+    <link href="css/homepage.css" rel="stylesheet" type="text/css" />
+    <style type="text/css">
+       .btn-glyphicon {
+    padding:8px;
+    background:#ffffff;
+    margin-right:2px;
+    color:cornflowerblue;
+}
+        .btn-glyphicon1 {
+    padding:8px;
+    background:#ffffff;
+    margin-right:2px;
+    color:darkred;
+}
+.icon-btn {
+    padding: 1px 13px 3px 2px;
+    border-radius:50px;
+}
+        .label
+        {
+            display: inline-block;
+            max-width: 100%;
+            margin-bottom: 5px;
+            font-weight: 700;
+            font-family: sans-serif;
+        }
+        #mydiv
+        {
+            height: 400px;
+            position: relative;
+            background-color: #F8F9F9; /* for demonstration */
+        }
+         #mydiv1
+        {
+            height: 400px;
+            position: relative;
+            background-color: #F8F9F9; /* for demonstration */
+        }
+        .ajax-loader
+        {
+            position: absolute;
+            height:100px;
+            width:100px;
+            left: 50%;
+            top: 50%;
+            margin-left: -32px; /* -1 * image width / 2 */
+            margin-top: -32px; /* -1 * image height / 2 */
+        }
+    </style>
+    <script type="text/javascript">
+        var roureall = "B";
+        $(function () {
+            fillcsoroutes();
+            getloginvalidation();
+            $('#mydiv').css('display', 'none');
+            $('#mydiv1').css('display', 'none');
+            $('#divclose').css('display', 'none');
+            $('#divcontrols').css('display', 'block');
+            $('#divFillScreen').css('display', 'none');
+            getloginvalidation2();
+            var today = new Date();
+            var dd = today.getDate();
+            var mm = today.getMonth() + 1; //January is 0!
+            var yyyy = today.getFullYear();
+            if (dd < 10) {
+                dd = '0' + dd
+            }
+            if (mm < 10) {
+                mm = '0' + mm
+            }
+            var hrs = today.getHours();
+            var mnts = today.getMinutes();
+            $('#txtdate').val(yyyy + '-' + mm + '-' + dd);
+            showorderindentdetails();
+            FillSalesOffice();
+            //getloginvalidation();
+            //getloginvalidation2();
+            //$('#mydiv').css('display', 'none');
+            $('#btn-save').css('display', 'none');
+            $('#btn_add').css('display', 'none');
+            $('#divclose1').css('display', 'none');
+            $('#divFillScreen1').css('display', 'none');
+            $('#lblBranchname').css('display', 'none');
+            checkloginstatus();
+        });
+        function checkloginstatus() {
+            var data = { 'op': 'checkloginstatus' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "NotValid") {
+                        window.location = 'login.html';
+                    }
+                    else if (msg == "valid") {
+
+                    }
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            callHandler(data, s, e);
+        }
+        var sessionarray = [];
+        function getloginvalidation() {
+            var data = { 'op': 'Getsessionvalues' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg[0].LevelType == "AccountsOfficer" || msg[0].LevelType == "Director") {
+                        $('#liapvocher').css('display', 'block');
+                        //                        $('#tdapprove').css('display', 'block');
+                    }
+                    else {
+                        $('#liapvocher').css('display', 'none');
+                        //                        $('#tdapprove').css('display', 'none');
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function fillcsoroutes() {
+            var data = { 'op': 'GetCsodispatchRoutes' };
+            var s = function (msg) {
+                if (msg) {
+
+                    BindDispatchName(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function BindDispatchName(msg) {
+            document.getElementById('ddldispatch').options.length = "";
+            var veh = document.getElementById('ddldispatch');
+            var length = veh.options.length;
+            for (i = length - 1; i >= 0; i--) {
+                veh.options[i] = null;
+            }
+            var opt = document.createElement('option');
+            opt.innerHTML = "Select BranchName";
+            opt.value = "";
+            veh.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i] != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].RouteName;
+                    opt.value = msg[i].rid;
+                    veh.appendChild(opt);
+                }
+            }
+        }
+        function routechange(ddldispatch) {
+            var RouteName = "";
+            RouteName = document.getElementById('ddldispatch').value;
+            // date = document.getElementById('txtdate').value;
+            if (RouteName == "Select Route" || RouteName == "") {
+                alert("Please Select Route Name");
+                return false;
+            }
+            var data = { 'op': 'GetRouteNameclick', 'RouteID': RouteName };
+            var s = function (msg) {
+                if (msg) {
+                    BindRouteName(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function BindRouteName(msg) {
+            document.getElementById('ddlRouteName').options.length = "";
+            var veh = document.getElementById('ddlRouteName');
+            var length = veh.options.length;
+            for (i = length - 1; i >= 0; i--) {
+                veh.options[i] = null;
+            }
+            var opt = document.createElement('option');
+            opt.innerHTML = "Select Type";
+            opt.value = "Select Type";
+            opt.innerHTML = "ALL";
+            opt.value = "ALL";
+
+            veh.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i] != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].RouteName;
+                    opt.value = msg[i].sno;
+                    veh.appendChild(opt);
+                }
+            }
+        } 
+        function getindentReportsclick() {
+            $('#divcontrols').css('display', 'none');
+            $('#mydiv1').css('display', 'block');
+            var Dispatchname = document.getElementById('ddldispatch').value;
+            date = document.getElementById('txtdate').value;
+            if (Dispatchname == "Select BranchName" || Dispatchname == "") {
+                alert("Please Select BranchName");
+                $('#mydiv1').css('display', 'none');
+                $('#divcontrols').css('display', 'block');
+                return false;
+            }
+            var RouteName = "";
+            if (roureall == "B") {
+                 RouteName = document.getElementById('ddlRouteName').value;
+            }
+            else {
+                RouteName = "A";
+            }
+            var data = { 'op': 'GetIndentReport', 'RouteID': RouteName, 'Branchid': Dispatchname, 'Date': date };
+            var s = function (msg) {
+                if (msg == "") {
+                    alert("Data Not Found");
+                    $('#mydiv1').css('display', 'none');
+                    $('#divclose').css('display', 'none');
+                    $('#divcontrols').css('display', 'block');
+                    $('#divFillScreen').css('display', 'none');
+                    $('#lblBranchname1').css('display', 'none');
+                }
+                else if (msg) {
+                    fillindentdetails(msg);
+                    $('#mydiv1').css('display', 'none');
+                    $('#divclose').css('display', 'block');
+                    $('#divFillScreen').css('display', 'block');
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+
+        function fillindentdetails(msg) {
+            j = 1;
+            var branch = ddldispatch.options[ddldispatch.selectedIndex].innerHTML;
+            var Routename = ddlRouteName.options[ddlRouteName.selectedIndex].innerHTML;
+            if (Routename == "ALL") {
+                document.getElementById('lblBranchname1').innerHTML = "" + branch;
+                $('#lblBranchname1').css('display', 'block');
+            }
+            else {
+                document.getElementById('lblBranchname1').innerHTML = "" + Routename;
+                $('#lblBranchname1').css('display', 'block');
+            }
+            var results = '<div  style="overflow:auto;"><table id="tableCashFormdetails" class="table table-bordered table-hover dataTable no-footer" role="grid" aria-describedby="example2_info">';
+            results += '<thead><tr></th><th scope="col">ProductName</th><th scope="col">Qty</th></tr></thead></tbody>';
+            for (var i = 0; i < msg.length; i++) {
+                results += '<tr>';
+                results += '<td class="2"><span id="txtamount" style="font-size: 16px; color: green; font-weight: bold;"   onclick="btnViewProducts(\'' + msg[i].sno + '\');"><b>' + msg[i].SubCatName + '</b></span></td>';
+                results += '<td class="2"><span id="txtamount" style="font-size: 16px; color: green; font-weight: bold;" class="tammountcls"><b>' + msg[i].totalqty + '</b></span></td></tr>';
+                j++;
+            }
+            results += '<tr>';
+            results += '<td data-title="brandstatus" style="font-size: 16px; color: red; font-weight: bold;" class="2">Total</td>';
+            results += '<td data-title="Total" style="font-size: 16px; color: red; font-weight: bold;" class="7"><span id="totalcls"></span></td></tr>';
+            results += '</table></div>';
+            $("#divFillScreen").html(results);
+            GettotalclsCal();
+        }
+        function GettotalclsCal() {
+            var totamount = 0;
+            $('.tammountcls').each(function (i, obj) {
+                var qtyclass = $(this).text();
+                if (qtyclass == "" || qtyclass == "0") {
+                }
+                else {
+                    totamount += parseFloat(qtyclass);
+                }
+            });
+            document.getElementById('totalcls').innerHTML = parseFloat(totamount).toFixed(2);
+        }
+        function logoutclick() {
+            var data = { 'op': 'log_out' };
+            var s = function (msg) {
+                if (msg == "Valid") {
+                    window.location = 'login.html';
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            callHandler(data, s, e);
+        }
+        function callHandler(d, s, e) {
+            $.ajax({
+                url: 'Bus.axd',
+                data: d,
+                type: 'GET',
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                async: true,
+                cache: true,
+                success: s,
+                error: e
+            });
+        }
+        function homeclick() {
+            window.location = "home.html";
+        }
+        function Indentclick() {
+            window.location = "indententry.html";
+        }
+        function Salesclick() {
+            window.location = "sales.html";
+        }
+        function dcclick() {
+            window.location = "dcreport.html";
+        }
+        function balanceclick() {
+            window.location = "ClosingStock.html";
+        }
+        function lekageclick() {
+            window.location = "lekages.html";
+        }
+        function cratesclick() {
+            window.location = "crates.html";
+        }
+        function cashclick() {
+            window.location = "cashbook.html";
+        }
+        function approvalvoucherclick() {
+            window.location = "VoucherApproval.html";
+        }
+        function horderindentclick() {
+            window.location = "indent.html";
+        }
+        function logoutclick() {
+            window.location = "login.html";
+        }
+        function closeclick() {
+            $('#mydiv1').css('display', 'none');
+            $('#divclose').css('display', 'none');
+            $('#divcontrols').css('display', 'block');
+            $('#divFillScreen').css('display', 'none');
+            $('#lblBranchname1').css('display', 'none');
+        }
+        function showindentreportdetails() {
+            $('#id_tab_indentreport').css('display', 'block');
+            $('#id_tab_indentorder').css('display', 'none');
+        }
+        function showorderindentdetails() {
+            $('#id_tab_indentreport').css('display', 'none');
+            $('#id_tab_indentorder').css('display', 'block');
+        }
+    </script>
+
+
+    <script type="text/javascript">
+        //$(function () {
+        //    FillSalesOffice();
+        //    getloginvalidation();
+        //    getloginvalidation2();
+        //    $('#mydiv').css('display', 'none');
+        //    $('#btn-save').css('display', 'none');
+        //    $('#btn_add').css('display', 'none');
+        //    $('#divclose').css('display', 'none');
+        //    $('#divFillScreen').css('display', 'none');
+        //    $('#lblBranchname').css('display', 'none');
+        //});
+        function CallHandlerUsingJson(d, s, e) {
+            $.ajax({
+                type: "GET",
+                url: "Bus.axd?json=",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify(d),
+                async: true,
+                cache: true,
+                success: s,
+                error: e
+            });
+        }
+        //function callHandler(d, s, e) {
+        //    $.ajax({
+        //        url: 'http://49.50.65.160/salesapp/Bus.axd',
+        //        data: d,
+        //        type: 'GET',
+        //        dataType: "json",
+        //        contentType: "application/json; charset=utf-8",
+        //        async: true,
+        //        cache: true,
+        //        success: s,
+        //        error: e
+        //    });
+        //}
+        var sessionarray = [];
+        function getloginvalidation2() {
+      
+            var data = { 'op': 'Getsessionvalues' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg[0].LevelType == "Agent" || msg[0].LevelType == "Agent") {
+                        roureall = "A"
+                        $('#lihome').css('display', 'block');
+                        $('#liindent').css('display', 'block');
+                        $('#lisales').css('display', 'none');
+                        $('#lidc').css('display', 'none');
+                        $('#liclosingstock').css('display', 'none');
+                        $('#lileakages').css('display', 'none');
+                        $('#liinventory').css('display', 'none');
+                        $('#licashbook').css('display', 'none');
+                        $('#id_tab_indent').css('display', 'block');
+                        $('#divcontrols1').css('display', 'block');
+                        $('#divroute').css('display', 'none');
+                        $('#reportroutename_div').css('display', 'none');
+                        leveltype = msg[0].LevelType;
+                        sessionarray = msg;
+                        get_agent_logindetails();
+                    }
+                    else if (msg[0].LevelType == "Opperations" || msg[0].LevelType == "Opperations") {
+                        roureall = "B";
+                        //$('#lihome').css('display', 'block');
+                        //$('#liindent').css('display', 'block');
+                        //$('#lisales').css('display', 'block');
+                        //$('#lidc').css('display', 'block');
+                        //$('#liclosingstock').css('display', 'block');
+                        //$('#lileakages').css('display', 'block');
+                        //$('#liinventory').css('display', 'block');
+                        //$('#licashbook').css('display', 'block');
+                        //$('#liorderindent').css('display', 'block');
+                        $('#divcontrols1').css('display', 'block');
+                        $('#id_tab_indent').css('display', 'block');
+                        $('#divroute').css('display', 'block');
+                    }
+                    else {
+                        roureall = "B";
+                        $('#id_tab_indent').css('display', 'none');
+                        $('#id_tab_indentorder').css('display', 'none');
+                        $('#id_tab_indentreport').css('display', 'block');
+                        $('#divroute').css('display', 'block');
+                        $('#divcontrols1').css('display', 'block');
+                        FillSalesOffice();
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        //var sessionarray = [];
+        //function getloginvalidation2() {
+        //    var data = { 'op': 'Getsessionvalues' };
+        //    var s = function (msg) {
+        //        if (msg) {
+        //            if (msg[0].LevelType == "AccountsOfficer" || msg[0].LevelType == "Director") {
+        //                $('#liapvocher').css('display', 'block');
+        //                //                        $('#tdapprove').css('display', 'block');
+        //            }
+        //            else {
+        //                $('#liapvocher').css('display', 'none');
+        //                //                        $('#tdapprove').css('display', 'none');
+        //            }
+        //        }
+        //        else {
+        //        }
+        //    };
+        //    var e = function (x, h, e) {
+        //    };
+        //    $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+        //    callHandler(data, s, e);
+        //}
+        function FillSalesOffice() {
+            var data = { 'op': 'GetDispatchAgents' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "login.html";
+                    }
+                    BindSalesOffice(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function BindSalesOffice(msg) {
+            var ddlsalesOffice = document.getElementById('ddlDispName');
+            var length = ddlsalesOffice.options.length;
+            ddlsalesOffice.options.length = null;
+            var opt = document.createElement('option');
+            opt.innerHTML = "select";
+            ddlsalesOffice.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i].RouteName != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].RouteName;
+                    opt.value = msg[i].rid;
+                    ddlsalesOffice.appendChild(opt);
+                }
+            }
+        }
+        function ddlRouteNameChange() {
+            var RouteID = document.getElementById('ddlDispName').value;
+            var data = { 'op': 'GetRouteNameChange', 'TripId': RouteID };
+            var s = function (msg) {
+                if (msg) {
+                    fillagent(msg);
+                    //                     GetBranchStatus();
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function fillagent(msg) {
+            var ddlBranchName = document.getElementById('ddlBranchName');
+            var length = ddlBranchName.options.length;
+            ddlBranchName.options.length = null;
+            var opt = document.createElement('option');
+            opt.innerHTML = "select";
+            ddlBranchName.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i].BranchName != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].BranchName;
+                    opt.value = msg[i].b_id;
+                    ddlBranchName.appendChild(opt);
+                }
+            }
+        }
+        function get_agent_logindetails() {
+            var data = { 'op': 'GetRouteNameChange' };
+            var s = function (msg) {
+                if (msg) {
+                    fillagentlogin(msg);
+                    //                     GetBranchStatus();
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function fillagentlogin(msg) {
+            var ddlBranchName = document.getElementById('ddlBranchName');
+            var length = ddlBranchName.options.length;
+            ddlBranchName.options.length = null;
+            var opt = document.createElement('option');
+            opt.innerHTML = "select";
+            ddlBranchName.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i].BranchName != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].BranchName;
+                    opt.value = msg[i].b_id;
+                    ddlBranchName.appendChild(opt);
+                }
+            }
+        }
+        function AddNewRowOrders() {
+            $('#mydiv').css('display', 'block');
+            FillCategeoryname();
+            $('#divMainAddNewRow').css('display', 'block');
+        }
+        function FillCategeoryname() {
+            var data = { 'op': 'FillCategeoryname' };
+            var s = function (msg) {
+                if (msg) {
+                    $('#mydiv').css('display', 'none');
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "Login.aspx";
+                    }
+                    BindCategeoryname(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        };
+        function BindCategeoryname(msg) {
+            var brnchprdtcatgryname = document.getElementById('cmb_brchprdt_Catgry_name');
+            var length = brnchprdtcatgryname.options.length;
+            brnchprdtcatgryname.options.length = null;
+            var opt = document.createElement('option');
+            opt.innerHTML = "select";
+            brnchprdtcatgryname.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i].categoryname != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].categoryname;
+                    opt.value = msg[i].sno;
+                    brnchprdtcatgryname.appendChild(opt);
+                }
+            }
+        }
+
+        function productsdata_categoryname_onchange() {
+            var cmbcatgryname = document.getElementById("cmb_brchprdt_Catgry_name").value;
+            var data = { 'op': 'get_product_subcategory_data', 'cmbcatgryname': cmbcatgryname };
+            var s = function (msg) {
+                if (msg) {
+                    fillproductsdata_subcatgry(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+            //AscCallHandler(data, s, e);
+        };
+        function fillproductsdata_subcatgry(msg) {
+            var brnchsubcategory = document.getElementById('cmb__brnch_subcatgry');
+            var length = brnchsubcategory.options.length;
+            document.getElementById("cmb__brnch_subcatgry").options.length = null;
+            document.getElementById("cmb__brnch_subcatgry").value = "select";
+            //        for (i = 0; i < length; i++) {
+            //            prdtsubcategory.options[i] = null;
+            //        }
+            var opt = document.createElement('option');
+            opt.innerHTML = "Select";
+            brnchsubcategory.appendChild(opt);
+
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i].subcategorynames != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].subcategorynames;
+                    opt.value = msg[i].sno;
+                    brnchsubcategory.appendChild(opt);
+                }
+            }
+        }
+        function productsdata_subcategory_onchange() {
+            var cmbsubcatgryname = document.getElementById("cmb__brnch_subcatgry").value;
+            var data = { 'op': 'get_products_data', 'cmbsubcatgryname': cmbsubcatgryname };
+            var s = function (msg) {
+                if (msg) {
+                    fillproductsdata_products(msg);
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+            // AscCallHandler(data, s, e);
+        };
+        function fillproductsdata_products(msg) {
+            var cmbprdtname = document.getElementById('cmb_productname');
+            var length = cmbprdtname.options.length;
+            document.getElementById("cmb_productname").options.length = null;
+            document.getElementById("cmb_productname").value = "select";
+            var opt = document.createElement('option');
+            opt.innerHTML = "Select";
+            cmbprdtname.appendChild(opt);
+            for (var i = 0; i < msg.length; i++) {
+                if (msg[i].productName != null) {
+                    var opt = document.createElement('option');
+                    opt.innerHTML = msg[i].productName;
+                    opt.value = msg[i].Sno;
+                    cmbprdtname.appendChild(opt);
+                }
+            }
+        }
+        var UnitPrice = 0;
+        var Units = 0;
+        var UnitQty = 0;
+        var QtyUnit = 0;
+        var orderunitRate = 0;
+        var Description = "";
+        var ProductSno = 0;
+        function ProductNameChane(sno) {
+            ProductSno = sno.value;
+            var BranchID = document.getElementById('ddlBranchName').value;
+            var data = { 'op': 'GetProductNamechange', 'ProductSno': ProductSno, 'BranchID': BranchID };
+            var s = function (msg) {
+                if (msg) {
+                    UnitPrice = msg[0].orderunitRate;
+                    UnitQty = msg[0].Unitqty;
+                    QtyUnit = msg[0].Unitqty;
+                    Units = msg[0].Units;
+                    orderunitRate = msg[0].orderunitRate;
+                    Description = msg[0].Desciption;
+                    if (DairyStatus == "Delivers") {
+                        getTotalIndentQty();
+                    }
+                }
+                else {
+                    UnitPrice = 0;
+                    UnitQty = 0;
+                    QtyUnit = 0;
+                    orderunitRate = 0;
+                    Description = "";
+                    orderunitRate = 0;
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        var RemainQty = 0;
+        function getTotalIndentQty() {
+            var data = { 'op': 'GetProductIndent', 'ProductSno': ProductSno };
+            var s = function (msg) {
+                if (msg) {
+                    RemainQty = msg;
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+
+        function btnOrdersAddClick() {
+
+            var CategoryName = document.getElementById('cmb_brchprdt_Catgry_name').value;
+            if (CategoryName == "select" || CategoryName == "") {
+                alert("Select Category Name");
+                return false;
+            }
+            var SubCategoryName = document.getElementById('cmb__brnch_subcatgry').value;
+            if (SubCategoryName == "Select" || SubCategoryName == "") {
+                alert("Select Sub Category Name");
+                return false;
+            }
+            var productname = document.getElementById('cmb_productname').value;
+            if (productname == "Select" || productname == "") {
+                alert("Select product Name");
+                return false;
+            }
+            addrowsOrders();
+            OrdersCloseClick();
+        }
+        function OrdersCloseClick() {
+            $('#divMainAddNewRow').css('display', 'none');
+            document.getElementById('cmb_brchprdt_Catgry_name').value = "";
+            document.getElementById('cmb__brnch_subcatgry').value = "";
+            document.getElementById('cmb_productname').value = "";
+            //$('#lblBranchname').css('display', 'none');
+        }
+
+        function OrderLeftToRight(id) {
+            var PrevQty = $(id).closest("tr").find('#txtPrvQty').text();
+            $(id).closest("tr").find('#txtUnitQty').val(PrevQty);
+            OrderUnitChange(PrevQty);
+        }
+        function OrderUnitChange(UnitQty) {
+            var totalqty;
+            var qty = 0.0;
+            var Rate = 0;
+            var rate = 0;
+            var total = 0;
+            var totalltr = 0;
+            var TotalRate = 0;
+            var cnt = 0;
+            if (UnitQty.value == "") {
+                $(UnitQty).closest("tr").find("#txtOrderTotal").text(total);
+                $('.Unitqtyclass').each(function (i, obj) {
+                    // var qtyclass = $(this).val();
+                    var qtyclass = $(this).closest('tr').find('#txtUnitQty').val();
+
+                    if (qtyclass == "" || qtyclass == "0") {
+                    }
+                    else {
+                        totalltr += parseFloat(qtyclass);
+
+                        cnt++;
+                    }
+                });
+                //                var FloatQty = qty.toFixed(2)
+                //                alert(cnt);
+                document.getElementById('txt_totqty').innerHTML = parseFloat(totalltr).toFixed(2);
+                $('.rateclass').each(function (i, obj) {
+                    rate += parseFloat($(this).text());
+                });
+                var Floatrate = rate.toFixed(2)
+                document.getElementById('txt_totRate').innerHTML = parseFloat(Floatrate).toFixed(2);
+                $('.totalclass').each(function (i, obj) {
+                    total += parseFloat($(this).text());
+                });
+                document.getElementById('txt_total').innerHTML = parseFloat(total).toFixed(2);
+                return false;
+            }
+            Rate = $(UnitQty).closest("tr").find("#txtOrderRate").text();
+            if (Units == "ml") {
+                totalqty = parseFloat(UnitQty.value);
+            }
+            if (Units == "ltr") {
+                totalqty = parseInt(UnitQty.value);
+            }
+            if (Units == "gms") {
+                totalqty = parseFloat(UnitQty.value);
+            }
+            if (Units == "kgs") {
+                totalqty = parseInt(UnitQty.value);
+            }
+            var FinalRate = 0;
+            FinalRate = UnitQty.value * Rate;
+            $(UnitQty).closest("tr").find("#txtOrderTotal").text(FinalRate);
+            cnt = 0;
+            $('.Unitqtyclass').each(function (i, obj) {
+                // var qtyclass = $(this).val();
+                var qtyclass = $(this).closest('tr').find('#txtUnitQty').val();
+
+                if (qtyclass == "" || qtyclass == "0") {
+                }
+                else {
+                    totalltr += parseInt(qtyclass);
+
+                    cnt++;
+                }
+            });
+            //            alert(cnt);
+            //            var FloatQty = qty.toFixed(2)
+            document.getElementById('txt_totqty').innerHTML = parseFloat(totalltr).toFixed(2);
+            rate = 0;
+            $('.rateclass').each(function (i, obj) {
+                rate += parseFloat($(this).text());
+            });
+            document.getElementById('txt_totRate').innerHTML = parseFloat(rate).toFixed(2);
+            total = 0;
+            $('.totalclass').each(function (i, obj) {
+                total += parseFloat($(this).text());
+            });
+            document.getElementById('txt_total').innerHTML = parseFloat(total).toFixed(2);
+        }
+        var DataTable;
+        function addrowsOrders() {
+            $('#divMainAddNewRow').css('display', 'none');
+            var branch = ddlBranchName.options[ddlBranchName.selectedIndex].innerHTML;
+            document.getElementById('lblBranchname').innerHTML = "" + branch;
+            $('#lblBranchname').css('display', 'block');
+            DataTable = [];
+            var txtsno = 0;
+            var txtProductName = "";
+            var txtProductSno = "";
+            var txtOrderQty = "";
+            var txtOrderRate = "";
+            var txtOrderTotal = "";
+            var txtUnitqty = "";
+            var txtUnits = "";
+            var orderunitqty = "";
+            var Qty = 0;
+            var Rate = 0;
+            var Total = 0;
+            var txtPrvQty = 0;
+            //            var Description = 0;
+            //            var UnitPrice = 0;
+            var txtDescription;
+            var ProductSno = document.getElementById('cmb_productname').value;
+            var rows = $("#tabledetails tr:gt(0)");
+            var Product = document.getElementById('cmb_productname');
+            var ProductName = Product.options[Product.selectedIndex].text;
+            var txt_totqty = document.getElementById('txt_totqty').innerHTML;
+            var txt_total = document.getElementById('txt_total').innerHTML;
+            var Checkexist = false;
+            $('.ProductClass').each(function (i, obj) {
+                var PName = $(this).text();
+                if (PName == ProductName) {
+                    alert("Product Already Added");
+                    Checkexist = true;
+                }
+            });
+            if (Checkexist == true) {
+                return;
+            }
+            var IndentNo = $('#hdnIndentNo').val();
+            $(rows).each(function (i, obj) {
+                if ($(this).find('#txtsno').text() != "") {
+                    txtsno = $(this).find('#txtsno').text();
+                    txtProductName = $(this).find('#txtproduct').text();
+                    txtProductSno = $(this).find('#hdnProductSno').val();
+                    txtOrderQty = $(this).find('#txtOrderQty').val();
+                    txtorderunitRate = $(this).find('#txtOrderRate').text();
+                    txtOrderTotal = $(this).find('#txtOrderTotal').text();
+                    orderunitqty = $(this).find('#txtUnitQty').val();
+                    txtUnitqty = $(this).find('#hdnUnitQty').val();
+                    txtUnits = $(this).find('#hdnUnits').val();
+                    txtUnits = $(this).find('#hdnUnits').val();
+                    txtOrderRate = $(this).find('#hdnRate').val();
+                    txtDescription = $(this).find('#txtDescription').text();
+                    txtPrvQty = $(this).find('#txtPrvQty').text();
+                    DataTable.push({ sno: txtsno, ProductCode: txtProductName, Productsno: txtProductSno, Qty: txtPrvQty, Total: txtOrderTotal, orderunitqty: orderunitqty, Rate: txtorderunitRate, Desciption: txtDescription });
+                }
+            });
+            var Sno = parseInt(txtsno) + 1;
+            var Prevqty = 0;
+            DataTable.push({ sno: Sno, ProductCode: ProductName, Productsno: ProductSno, Total: Total, orderunitqty: 0, Rate: UnitPrice, Desciption: Description, Qty: QtyUnit });
+            var j = 1;
+
+            var results = '<div class="divcontainer" style="overflow:auto; font-size:10px;"><table class="table table-bordered table-hover dataTable no-footer" id="tabledetails">';
+            results += '<thead><tr><th scope="col">Sno</th><th scope="col">Product Name</th><th scope="col">Prev Qty</th><th scope="col">Qty</th><th scope="col">UOM</th><th scope="col">Rate</th><th scope="col">Total</th></tr></thead></tbody>';
+            for (var i = 0; i < DataTable.length; i++) {
+                results += '<tr ><td data-title="Sno" style="width:10px;" id="txtsno">' + j + '</td>';
+                results += '<td data-title="ProductCode" scope="row" class="ProductClass"  id="txtproduct">' + DataTable[i].ProductCode + '</td>';
+                results += '<td style="display:none" ><input type="text"  id="hdnProductSno"  value="' + DataTable[i].Productsno + '"/></td>';
+                results += '<td data-title="Qty" class="2" id="txtPrvQty"><img src="images/Send1.png" height="15px" width="15px"   style ="margin: -1px -3px -12px 16px" onclick="OrderLeftToRight(this);"/>' + DataTable[i].Qty + '</td>';
+                results += '<td data-title="orderunitqty" class="3"><input type="text"  id="txtUnitQty" onkeyup="OrderUnitChange(this);" onkeypress="return isFloat(event)" Placeholder="Qty" style="width:55px;"  class="Unitqtyclass" value="' + DataTable[i].orderunitqty + '"/></td></td>';
+                results += '<td data-title="Desciption" class="4"><span  id="txtDescription">' + DataTable[i].Desciption + '</span></td>';
+                results += '<td data-title="Rate" class="5"><span id="txtOrderRate" class="rateclass">' + DataTable[i].Rate + '</span></td></td>';
+                results += '<td data-title="Total" class="6"><span id="txtOrderTotal" class="totalclass">' + DataTable[i].Total + '</span></td>';
+                results += '<td style="display:none" class="7"><input type="text" id="hdnIndentNo" value="' + DataTable[i].IndentNo + '"></td></tr>';
+                j++;
+            }
+            results += '<tr><td></td><td></td><td></td><td data-title="Qtytotal"><span id="txt_totqty"></span></td><td  type="hidden"></td><td dat-tile="Total"><span id="txt_totRate" hidden></span></td><td data-title="Total"><span id="txt_total"></span></td></tr>';
+            results += '</table></div>';
+            $("#divproducts").html(results);
+            $('#hdnIndentNo').val(IndentNo);
+            document.getElementById('txt_totqty').innerHTML = txt_totqty;
+            document.getElementById('txt_total').innerHTML = txt_total;
+            var data = { 'op': 'AddBranchProducts', 'ProductSno': ProductSno, 'Rate': UnitPrice, 'bid': bid };
+            var s = function (msg) {
+                if (msg) {
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function btnorderssaveclick() {
+            $('#mydiv').css('display', 'block');
+            var BtnSave = document.getElementById('BtnSave').value;
+            if (BtnSave == "Edit") {
+                $(".Unitqtyclass").attr("disabled", false);
+                $(".OfferUnitqtyclass").attr("disabled", false);
+                document.getElementById('BtnSave').value = "Save";
+                return false;
+            }
+            if (!confirm("Do you really want Save")) {
+                return false;
+            }
+            var BranchName = document.getElementById('ddlBranchName').value;
+            var totqty = document.getElementById('txt_totRate').innerHTML;
+            //var totrate = document.getElementById('txt_totRate').value;
+            var totTotal = document.getElementById('txt_total').innerHTML;
+            var IndentNo = $('#hdnIndentNo').val();
+            var rows = $("#tabledetails tr:gt(0)");
+            var Orderdetails = new Array();
+            $(rows).each(function (i, obj) {
+                var txtsno = $(this).find('#txtsno').text();
+                var txtUnitQty = $(this).find('#txtUnitQty').val();
+                if (txtsno == "" || txtUnitQty == "") {
+                }
+                else {
+                    Orderdetails.push({ SNo: $(this).find('#txtsno').text(), ProductSno: $(this).find('#hdnProductSno').val(), Product: $(this).find('#txtproduct').text(), Rate: $(this).find('#txtOrderRate').val(), Total: $(this).find('#txtOrderTotal').text(), Unitsqty: $(this).find('#txtUnitQty').val(), UnitCost: $(this).find('#txtOrderRate').text() });
+                }
+            });
+            var TotalPrice = parseFloat(totTotal) - parseFloat(FinalAmount);
+            $('#mydiv').css('display', 'none');
+            var Data = { 'op': 'btnOrderSaveClick', 'BranchID': BranchName, 'data': Orderdetails, 'totqty': totqty, 'totTotal': totTotal, 'IndentNo': IndentNo, 'TotalPrice': TotalPrice };
+            var s = function (msg) {
+                if (msg) {
+                    alert(msg);
+
+                    $(".Unitqtyclass").attr("disabled", true);
+                    $(".OfferUnitqtyclass").attr("disabled", true);
+                    document.getElementById('BtnSave').value = "Edit";
+                    if (msg == "Session Expired") {
+                        window.location = "Login.html";
+                        OrderRefresh();
+                    }
+                }
+                else {
+
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            CallHandlerUsingJson(Data, s, e);
+        }
+        var DairyStatus = "";
+        function divOrdersclick() {
+            $('#mydiv').css('display', 'block');
+
+            $('#mainform').css('display', 'none');
+
+            var BranchName = document.getElementById('ddlBranchName').value;
+            if (BranchName == "Select Agent" || BranchName == "") {
+                alert("Please Select Agent Name");
+                return false;
+            }
+            DairyStatus = "Orders";
+            $('#tableOrder').css('display', 'block');
+            $('#divback').css('display', 'block');
+            $('#divHide').css('display', 'none');
+            $('#divRouteOrder').css('display', 'none');
+            $('#divFillScreen1').css('display', 'block');
+            BranchChane();
+            GetOrderStatus();
+        }
+        var CollectionType = "";
+        var RouteID = "";
+        var bid = "";
+        function BranchChane() {
+            var IndentType = "indent1";
+            if (DairyStatus != "Collections") {
+                var bid = document.getElementById('ddlBranchName').value;
+
+                var data = { 'op': 'getBranchValues', 'bid': bid, 'DairyStatus': DairyStatus, 'IndentType': IndentType, 'RouteID': RouteID };
+                var s = function (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "Login.html";
+                    }
+                    if (msg) {
+                        if (DairyStatus == "Orders") {
+                            BindOrdersclick(msg);
+                            calcTot();
+                            $('#btn-save').css('display', 'block');
+                            $('#btn_add').css('display', 'block');
+                            $('#divclose1').css('display', 'block');
+
+                        }
+                        if (DairyStatus == "Delivers") {
+                            BindDeliversclick(msg);
+                            CalcDeliveryqty();
+                            $('#btn-save').css('display', 'block');
+                            $('#btn_add').css('display', 'block');
+                            $('#divclose1').css('display', 'block');
+                        }
+                    }
+                    else {
+                    }
+                };
+                var e = function (x, h, e) {
+                };
+                $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+                callHandler(data, s, e);
+            }
+            else {
+                var data = { 'op': 'getBranchValuesamount', 'bid': bid };
+                var s = function (msg) {
+                    if (msg) {
+                        if (msg == "Session Expired") {
+                            alert(msg);
+                            window.location = "Login.html";
+                        }
+                        var txtAmountPayable = msg[0].TotalAmount;
+                        var txtTodayAmont = msg[0].TodayAmount;
+                        HdnIndentNo = msg[0].IndentNo;
+                        var rr = $('#hdnIndentNo').val(msg[0].IndentNo);
+                        var PayAmount = 0;
+                        PayAmount = parseFloat(msg[0].TotalAmount);
+                        document.getElementById('txtAmountPayable').innerHTML = PayAmount.toFixed(2);
+                        document.getElementById('txtTodayAmont').innerHTML = txtTodayAmont.toFixed(2);
+                        document.getElementById('txtDeductions').innerHTML = 0;
+                        var TotAmount = parseFloat(txtTodayAmont);
+                        document.getElementById('txtTotalAmount').innerHTML = TotAmount.toFixed(2);
+
+                    }
+                    else {
+                    }
+                };
+                var e = function (x, h, e) {
+                };
+                $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+                callHandler(data, s, e);
+            }
+        }
+        var FinalAmount;
+        function calcTot() {
+            var qty = 0.0;
+            var rate = 0;
+            var total = 0;
+            var totalltr = 0;
+            var cnt = 0;
+            $('.Unitqtyclass').each(function (i, obj) {
+                var qtyclass = $(this).closest('tr').find('#txtUnitQty').val();
+                if (qtyclass == "" || qtyclass == "0") {
+                }
+                else {
+                    totalltr += parseFloat(qtyclass);
+                    cnt++;
+                }
+            });
+            document.getElementById('txt_totqty').innerHTML = parseFloat(totalltr).toFixed(2);
+            $('.rateclass').each(function (i, obj) {
+                rate += parseFloat($(this).text());
+            });
+            document.getElementById('txt_totRate').innerHTML = parseFloat(rate).toFixed(2);
+            $('.totalclass').each(function (i, obj) {
+                total += parseFloat($(this).text());
+            });
+            document.getElementById('txt_total').innerHTML = parseFloat(total).toFixed(2);
+            FinalAmount = total;
+        }
+        function CountChange(count) {
+            var TotalCash = 0;
+            var Total = 0;
+            if (count.value == "") {
+                $(count).closest("tr").find(".TotalClass").text(Total);
+                document.getElementById('txtSubmittedAmount').value = Total;
+                return false;
+            }
+            var Cash = $(count).closest("tr").find(".CashClass").text();
+            if (Cash == "Vouchers") {
+                Cash = 1;
+            }
+            Total = parseInt(count.value) * parseInt(Cash);
+            $(count).closest("tr").find(".TotalClass").text(Total);
+            $('.TotalClass').each(function (i, obj) {
+                TotalCash += parseInt($(this).text());
+            });
+            document.getElementById('txt_Total').innerHTML = TotalCash;
+            document.getElementById('txtSubmittedAmount').value = TotalCash;
+        }
+        function GetOrderStatus() {
+
+            var IndentType = "indent1";
+            var data = { 'op': 'getOrderStatus', 'Bid': bid, 'IndentType': IndentType };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Indent Completed") {
+                        $(".Unitqtyclass").attr("disabled", true);
+                        document.getElementById('BtnSave').value = "Edit";
+                        return false;
+                    }
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        function isFloat(event) {
+            var charCode = (event.which) ? event.which : event.keyCode;
+            if (charCode != 46 && charCode > 31 && (charCode < 48 || charCode > 57)) {
+                return false;
+            }
+            else {
+                var parts = event.srcElement.value.split('.');
+                if (parts.length > 1 && charCode == 46)
+                    return false;
+                return true;
+
+            }
+        }
+        var orderdata = [];
+        function BindOrdersclick(msg) {
+            var branch = ddlBranchName.options[ddlBranchName.selectedIndex].innerHTML;
+            document.getElementById('lblBranchname').innerHTML = "" + branch;
+            $('#lblBranchname').css('display', 'block');
+            $('#mydiv').css('display', 'none');
+            var results = '<div class="divcontainer" style="overflow:auto;font-size:10px;"><table class="table table-bordered table-hover dataTable no-footer" id="tabledetails">';
+            results += '<thead><tr><th scope="col">Sno</th><th scope="col">Product Name</th><th scope="col">Prev Qty</th><th scope="col">Qty</th><th scope="col">UOM</th><th scope="col">Rate</th><th scope="col">Total</th></tr></thead></tbody>';
+            var j = 1;
+            for (var i = 0; i < msg.length; i++) {
+                var orderunitqty = msg[i].orderunitqty;
+                if (orderunitqty != "0" || orderunitqty != "") {
+                    results += '<tr ><td data-title="Sno" style="width:10px;" id="txtsno"> ' + j + '</td>';
+                    results += '<td data-title="ProductCode" scope="row" class="ProductClass"  id="txtproduct">' + msg[i].ProductCode + '</td>';
+                    results += '<td style="display:none" ><input type="text"  id="hdnProductSno"  value="' + msg[i].Productsno + '"/></td>';
+                    results += '<td data-title="Qty" class="2" id="txtPrvQty" style="width:10px;" ><img src="images/Send1.png" height="15px"    style=" margin: -1px -3px -12px 16px" width="15px" onclick="OrderLeftToRight(this);"/>' + msg[i].Qty + '</td>';
+                    results += '<td data-title="orderunitqty" class="3"><input type="text"  onkeypress="return isFloat(event)" Placeholder="Qty"  id="txtUnitQty" onkeyup="OrderUnitChange(this);" style="width:35px;"   class="Unitqtyclass" value="' + msg[i].orderunitqty + '"/></td></td>';
+                    results += '<td data-title="Desciption" class="4"><span  id="txtDescription">' + msg[i].Desciption + '</span></td>';
+                    results += '<td data-title="Rate" class="5"><span id="txtOrderRate" class="rateclass">' + msg[i].Rate + '</span></td></td>';
+                    results += '<td data-title="Total" class="6"><span id="txtOrderTotal" class="totalclass">' + msg[i].Total + '</span></td>';
+                    results += '<td style="display:none" class="7"><input type="text" id="hdnIndentNo" value="' + msg[i].IndentNo + '"></td></tr>';
+                    j++;
+                }
+            }
+            results += '<tr><td></td><td></td><td></td><td data-title="Qtytotal"><span id="txt_totqty"></span></td><td  type="hidden"></td><td dat-tile="Total"><span id="txt_totRate" hidden></span></td><td data-title="Total"><span id="txt_total"></span></td></tr>';
+            results += '</table></div>';
+
+            $("#divproducts").html(results);
+
+            ////            orderdata = msg;
+            ////            var table = document.getElementById("tabledetails");
+            ////            for (var i = table.rows.length - 1; i > 0; i--) {
+            ////                table.deleteRow(i);
+            ////            }
+            ////            var j = 1;
+            ////            for (var i = 0; i < msg.length; i++) {
+            ////                var orderunitqty = msg[i].orderunitqty;
+            ////                if (orderunitqty == "") {
+            ////                    var tablerowcnt = document.getElementById("tabledetails").rows.length;
+            ////                    $('#tabledetails').append('<tr><td id="txtsno" data-title="sno">' + j + '</td><td data-title="ProductName" class="ProductClass" id="txtproduct" >' + msg[i].ProductCode + '<i   aria-hidden="true"><span id="hdnProductSno" hidden>' + msg[i].Productsno + '</span></td><td data-title="PrvQty" id="txtPrvQty">' + msg[i].Qty + '</td><td data-title="Qty"><input type="text"  id="txtUnitQty" onkeyup="OrderUnitChange(this);"  class="Unitqtyclass"     value=""/></td><td data-title="Description"><span  id="txtDescription">' + msg[i].Desciption + '</span></td><td data-title="Rate"><span id="txtOrderRate" class="rateclass">' + msg[i].Rate + '</span></td><td data-title="TotalAmount"><span id="txtOrderTotal" class="totalclass">' + msg[i].Total + '</span><span id="hdnIndentNo" hidden>' + msg[i].IndentNo + '</span></td></td></tr>');
+            ////                    j++;
+            ////                }
+            ////                else {
+            ////                    var tablerowcnt = document.getElementById("tabledetails").rows.length;
+            ////                    $('#tabledetails').append('<tr><td id="txtsno" data-title="sno">' + j + '</td><td data-title="ProductName" class="ProductClass" id="txtproduct">' + msg[i].ProductCode + '<i   aria-hidden="true"><span id="hdnProductSno" hidden>' + msg[i].Productsno + '</span></td><td data-title="PrvQty" id="txtPrvQty">' + msg[i].Qty + '</td><td data-title="Qty"><input type="text"  id="txtUnitQty" onkeyup="OrderUnitChange(this);" readonly  class="Unitqtyclass" value="' + msg[i].orderunitqty + '"/></td><td data-title="Description"><span  id="txtDescription">' + msg[i].Desciption + '</span></td><td data-title="Rate"><span id="txtOrderRate" class="rateclass">' + msg[i].Rate + '</span></td><td data-title="TotalAmount"><span id="txtOrderTotal" class="totalclass">' + msg[i].Total + '</span><span id="hdnIndentNo" hidden>' + msg[i].IndentNo + '</span></td></td></tr>');
+            ////                    j++;
+            ////                }
+            ////            }
+            ////            $('#tabledetails').append('<tr><td ></td><td></td><td ></td><td data-title="Qtytotal"><span id="txt_totqty"></span></td><td  type="hidden"></td><td dat-tile="Total"><span id="txt_totRate" hidden></span></td><td data-title="Total"><span id="txt_total"></span></td><td ></td></tr>');
+        }
+        var UserName = "";
+        var Permissions = "";
+        var datatab;
+        function GetPermissions() {
+            var data = { 'op': 'GetPermissions' };
+            var s = function (msg) {
+                if (msg) {
+                    if (msg == "Session Expired") {
+                        alert(msg);
+                        window.location = "Login.html";
+                    }
+                    UserName = msg[0].UserName;
+                    Permissions = msg[0].Permision;
+                    count = msg[0].Count;
+                    GetValues();
+                    datatab = msg;
+                }
+                else {
+                }
+            };
+            var e = function (x, h, e) {
+            };
+            $(document).ajaxStart($.blockUI).ajaxStop($.unblockUI);
+            callHandler(data, s, e);
+        }
+        var count = 0;
+        var StatusDropDown = "";
+        function GetValues() {
+            window.history.forward(1);
+            document.getElementById('txtUser').innerHTML = UserName;
+            Permissions = Permissions;
+            var Permns = [];
+            Permns = Permissions.split(';');
+            for (var i = 0; i < Permns.length; i++) {
+                switch (Permns[i]) {
+                    case "O":
+                        $('#divOrders').css('display', 'block');
+                        $('#divIndentReporting').css('display', 'block');
+                        $('#divOrderReport').css('display', 'block');
+                        $('#divProductReport').css('display', 'block');
+                        StatusDropDown = "Order";
+                        if (count > 1) {
+                            $('#divRouteOrder').css('display', 'block');
+                            FillDispatchRoutes();
+                        }
+                        else {
+                            $('#divRouteOrder').css('display', 'none');
+                            FillDispatchBrach();
+                        }
+                        break;
+                }
+            }
+        }
+        //function homeclick() {
+        //    window.location = "home.html";
+        //}
+        //function Indentclick() {
+        //    window.location = "indententry.html";
+        //}
+        //function Salesclick() {
+        //    window.location = "sales.html";
+        //}
+        //function dcclick() {
+        //    window.location = "dcreport.html";
+        //}
+        //function balanceclick() {
+        //    window.location = "ClosingStock.html";
+        //}
+        //function lekageclick() {
+        //    window.location = "lekages.html";
+        //}
+        //function cratesclick() {
+        //    window.location = "crates.html";
+        //}
+        //function cashclick() {
+        //    window.location = "cashbook.html";
+        //}
+        //function approvalvoucherclick() {
+        //    window.location = "VoucherApproval.html";
+        //}
+        //function horderindentclick() {
+        //    window.location = "indent.html";
+        //}
+        //function logoutclick() {
+        //    window.location = "login.html";
+        //}
+        function closeclick1() {
+            $('#btn-save').css('display', 'none');
+            $('#btn_add').css('display', 'none');
+            $('#tabledetails').css('display', 'none');
+            $('#mainform').css('display', 'block');
+            $('#divclose1').css('display', 'none');
+            $('#divclose1').css('display', 'none');
+            $('#divcontrols1').css('display', 'block');
+            $('#divFillScreen1').css('display', 'none');
+            $('#lblBranchname').css('display', 'none');
+        }
+        //}
+        //function logoutclick() {
+        //    var data = { 'op': 'log_out' };
+        //    var s = function (msg) {
+        //        if (msg == "Valid") {
+        //            window.location = 'login.html';
+        //        }
+        //    };
+        //    var e = function (x, h, e) {
+        //    };
+        //    callHandler(data, s, e);
+        //}
+    </script>
+
+
+</head>
+<body style="background: whitesmoke !important;">
+    <!-- Pushy Menu -->
+    <nav class="pushy pushy-left">
+        <ul>
+            <li id="lihome" class="home-icon"><a href="#" onclick="homeclick();">&nbsp&nbsp&nbsp Home</a></li>
+            <li id="liindent" class="about-icon"><a href="#" onclick="Indentclick();">&nbsp&nbsp&nbsp Indent</a></li>
+            <li id="lisales" class="features-icon"><a href="#" onclick="Salesclick();">&nbsp&nbsp&nbsp Sales</a></li>
+            <li id="lidc" class="photos-icon"><a href="#" onclick="dcclick();">&nbsp&nbsp&nbsp DC Report</a></li>
+            <li id="liclosingstock" class="video-icon"><a href="#" onclick="balanceclick();">&nbsp&nbsp&nbsp Closing Stock Report</a></li>
+            <li id="lileakages" class="blog-icon"><a href="#" onclick="lekageclick();">&nbsp&nbsp&nbsp Lekages</a></li>
+            <li id="liinventory" class="contact-icon"><a href="#" onclick="cratesclick();">&nbsp&nbsp&nbsp Inventory</a></li>
+            <li id="licashbook" class="cash-icon"><a href="#" onclick="cashclick();">&nbsp&nbsp&nbsp Cash Book</a></li>
+            <li id="liapvocher" class="approve-icon">
+                <a href="#" onclick="approvalvoucherclick();">
+                    &nbsp&nbsp&nbsp Approval
+                    Voucher
+                </a>
+            </li>
+           
+            <li class="logout-icon"><a href="#" onclick="logoutclick();">&nbsp&nbsp&nbsp Logout</a></li>
+        </ul>
+    </nav>
+    <!-- Site Overlay -->
+    <div class="site-overlay">
+    </div>
+    <!----TABS-->
+    <div class="box box-info">
+        <div>
+            <div class="menu-btn" style="font-size: 22px;">
+                &#9776; &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Vyshnavi
+                Sales
+            </div>
+            <ul class="nav nav-tabs">
+                <li id="id_tab_indent" >
+                    <a data-toggle="tab" href="#" onclick="showorderindentdetails()">
+                        <i class="fa fa-street-view"></i>&nbsp;&nbsp;INDENT ORDER
+                    </a>
+                </li>
+                <li id="id_tab_indent2" >
+                    <a data-toggle="tab" href="#" onclick="showindentreportdetails()">
+                        <i class="fa fa-file-text"></i>&nbsp;&nbsp;INDENT REPORT
+                    </a>
+                </li>
+            </ul>
+        </div>
+    <!---INDENT ORDER Content-->
+    <div id="id_tab_indentorder">
+        <div id="container">
+            <!-- Menu Button -->
+            
+            <div style="padding: 13px; padding-left: 36px; color: #2a70bb; text-align: left;
+            cursor: pointer; font-size: 20px;">
+                <i class="fa fa-indent" aria-hidden="true"></i>Indent Entry
+            </div>
+            <!-- table code-->
+            <form role="form">
+                <div id="divcontrols1" class="box-body">
+                    <div id="mydiv" style="display: none;">
+                        <img src="images/loading.gif" alt="Loading..." id="LoadingGraphic" class="ajax-loader" />
+                    </div>
+                    <div id="mainform">
+                        <div class="form-group" id="divroute" >
+                            <label>
+                                RouteName:
+                            </label>
+                            <select id="ddlDispName" class="form-control" onchange="ddlRouteNameChange();"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">
+                                AgentName:
+                            </label>
+                            <select id="ddlBranchName" class="form-control" name="Agent"></select>
+                        </div>
+                        <div id="divOrders" style="text-align: center;">
+                            <a class="btn icon-btn btn-primary" id="btnorders" onclick="return divOrdersclick();" href="#"><span id="Button1" onclick="return divOrdersclick();" name="submit" class="glyphicon btn-glyphicon glyphicon-ok-circle img-circle text-muted"></span>Order</a>
+                            <!--<input type="button" value="Orders" id="btnorders" class="btn btn-primary"  onclick="return divOrdersclick();"  />-->
+                        </div>
+                    </div>
+                    <table>
+                        <tr>
+                            <td>
+                                <div>
+                                    <span id="lblBranchname" style="width: 250px;margin: -10px 0px 23px 1px; color: Red; font-weight: bold; font-size: 18px;"></span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div id="divclose1" style="text-align: right;margin: -10px 0px 40px 1px;">
+                                    <a class="btn icon-btn btn-danger" id="Button1" onclick="closeclick1();" href="#"><span id="Button1" onclick="closeclick();" name="submit" class="glyphicon btn-glyphicon1 glyphicon-remove img-circle text-muted"></span>Close</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <div style="margin: -38px 0px 0px -9px;">
+
+                        <div id="divproducts"></div>
+                        <table>
+                            <tr>
+                                <td style="width:80%">
+                                    <table id="btn_add">
+                                        <tr>
+                                            <td>
+                                                <a class="btn icon-btn btn-primary" id="Btnadd" value="ADD" onclick="AddNewRowOrders();" href="#"><span id="Btnadd" value="ADD" onclick="AddNewRowOrders();" name="submit" class="glyphicon btn-glyphicon glyphicon-plus img-circle text-muted"></span>Add</a>
+                                                <!--<input type="button" id="Btnadd" value="ADD" onclick="AddNewRowOrders();" class="btn btn-primary" />-->
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </td>
+
+                                <td>
+                                    <div id="btn-save">
+                                        <table align="center">
+                                            <tr>
+                                                <td>
+                                                    <button class="btn btn-7 btn-7h  " id="BtnSave" value="Save" onclick="btnorderssaveclick();" style="background:#42ca79;box-shadow:0 7px #2a9a3c; "><span class="glyphicon glyphicon-ok-circle"> Save</span></button>
+                                                    <!--<input type="button" id="BtnSave" value="Save" onclick="btnorderssaveclick();" class="btn btn-primary" />-->
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--</div>-->
+                    </div>
+                    <div id="divMainAddNewRow" class="pickupclass" style="text-align: center; height: 12%;
+        width: 100%; position: absolute; display: none; left: 0%; top: 0%; z-index: 99999;
+        background: rgba(192, 192, 192, 0.7);">
+                        <div id="divAddNewRow" style="border: 5px solid #A0A0A0; position: absolute; top: 86%;
+            background-color: White; left: 0%; right: 0%; height:450px; width:346px;  -webkit-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+            -moz-box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65); box-shadow: 1px 1px 10px rgba(50, 50, 50, 0.65);
+            border-radius: 10px 10px 10px 10px;">
+                            <table align="left" cellpadding="0" cellspacing="0" style="float: left; width: 100%; padding:15px;"
+                                   id="tableCollectionDetails" class="mainText2" border="1">
+                                <tr>
+                                    <td style="padding:15px;">
+                                        Categeory Name
+                                        <select id="cmb_brchprdt_Catgry_name" style="width:59%;height:34px;border-radius:4px;" class="ddlsize" onchange="productsdata_categoryname_onchange();"></select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:15px;">
+                                        Sub Categeory
+                                        <select id="cmb__brnch_subcatgry" style="width:60%;height:34px;border-radius:4px;" class="ddlsize" onchange="productsdata_subcategory_onchange();"></select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:15px;">
+                                        Product Name
+                                        <select id="cmb_productname" style="width:59%;height:34px;border-radius:4px;" class="ddlsize" onchange="ProductNameChane(this)"></select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:15px;">
+                                        <a class="btn icon-btn btn-primary" value="ADD" id="Button2" onclick="btnOrdersAddClick();" href="#"><span value="ADD" id="Button2" onclick="btnOrdersAddClick();" name="submit" class="glyphicon btn-glyphicon glyphicon-plus img-circle text-muted"></span>Add</a>
+                                        <!--<input type="button" value="ADD" id="Button2" onclick="btnOrdersAddClick();" class="ContinueButton" style="width:24%;height:40px;font-size:16px;background-color:#428BCA;border-radius:6px;" />-->
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div id="div1" style="width: 35px; top: 44.5%; right: 2.5%; position: absolute;
+            z-index: 99999; cursor: pointer;">
+                            <img src="images/Odclose.png" alt="close" onclick="OrdersCloseClick();" />
+                        </div>
+                    </div>
+                </div>
+
+                <!--<div id="divclose" style="text-align: right;">
+                <input id="Button1" type="button" class="btn btn-primary" name="submit" value="Close"
+                    onclick="closeclick();"></div>-->
+                <span id="lblBranchname" style="width: 700px; color: Red; font-weight: bold; font-size: 25px;">
+                </span>
+                <!--<div id="divtotal" style="overflow: auto;">
+                <span style="color: green; font-weight: bold; font-size: 25px;" align="left" id="lblid">
+                    Grand Total </span><span id="totalcls" align="left" style="color: Red; font-weight: bold;
+                        font-size: 25px; padding-left: 150px;"></span>
+            </div>-->
+            </form>
+        </div>
+    </div>
+        <!-- Your INDENT REOPRT Content -->
+        <div id="id_tab_indentreport">
+            <div id="container">
+                <!-- Menu Button -->
+                <!--<div class="menu-btn" style="font-size: 22px;">
+                    &#9776; &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp Vyshnavi
+                    Sales
+                </div>-->
+                <div style="padding: 13px; padding-left: 36px; color: #2a70bb; text-align: left;
+            cursor: pointer; font-size: 20px;">
+                    <i class="fa fa-indent" aria-hidden="true"></i>Indent Report
+                </div>
+                <!-- table code-->
+                <form role="form">
+                    <div id="divcontrols" class="box-body">
+                        <div class="form-group">
+                            <label>
+                                Branch Name:
+                            </label>
+                            <select class="form-control" id="ddldispatch" onchange="routechange(this);"></select>
+                        </div>
+                        <div class="form-group" id="reportroutename_div">
+                            <label for="exampleInputPassword1">
+                                Route Name:
+                            </label>
+                            <select class="form-control" id="ddlRouteName"></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputFile">
+                                Date
+                            </label>
+                            <input type="date" id="txtdate" class="form-control" value="" />
+                        </div>
+                        <div class="box-footer" style="text-align: center;">
+                            <a id="btn_save" onclick="return getindentReportsclick();" class="btn icon-btn btn-primary" href="#">
+                                <span id="btn_save" onclick="return getindentReportsclick();" class="glyphicon btn-glyphicon glyphicon-cog img-circle text-success"></span>
+                                Generate
+                            </a>
+                            <!--<input id="btn_save" type="button" class="btn btn-primary" name="submit" value="Genarate"
+                            onclick="return getindentReportsclick();">-->
+                        </div>
+                    </div>
+                    <div id="mydiv1" style="display: none;margin: 0px 17px;">
+                        <img src="images/loading.gif" alt="Loading..." id="LoadingGraphic" class="ajax-loader" />
+                    </div>
+                    <table>
+                        <tr>
+                            <td>
+                                <div>
+                                    <span id="lblBranchname1" style="width: 235px; color: Red; font-weight: bold; font-size: 18px;"></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div id="divclose">
+                                    <a class="btn icon-btn btn-danger" id="Button1" onclick="closeclick();" href="#"><span id="Button1" onclick="closeclick();" name="submit" class="glyphicon btn-glyphicon1 glyphicon-remove img-circle text-muted"></span>Close</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div id="divFillScreen"></div>
+                    <!--<div id="divtotal" style="overflow: auto;">
+                    <span style="color: green; font-weight: bold; font-size: 25px;" align="left" id="lblid">
+                        Grand Total </span><span id="totalcls" align="left" style="color: Red; font-weight: bold;
+                            font-size: 25px; padding-left: 150px;"></span>
+                </div>-->
+                </form>
+            </div>
+        </div>
+        <!-- Pushy JS -->
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+        <script src="js/pushy.min.js"></script>
+        <script type="text/javascript">
+
+            var _gaq = _gaq || [];
+            _gaq.push(['_setAccount', 'UA-36251023-1']);
+            _gaq.push(['_setDomainName', 'jqueryscript.net']);
+            _gaq.push(['_trackPageview']);
+
+            (function () {
+                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+            })();
+
+        </script>
+    </div></body>
+</html>
