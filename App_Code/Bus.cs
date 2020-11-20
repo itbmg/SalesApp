@@ -5271,34 +5271,16 @@
                 string BranchId = context.Request["Branchid"];
                 IndentType = "Indent1";
                 DateTime date = Convert.ToDateTime(Date);
+                string levelType = context.Session["LevelType"].ToString();
                 //if (RouteID != "")
                 //{
                 //    cmd = new MySqlCommand("select Route_id,IndentType from dispatch_sub where dispatch_sno=@dispsno");
                 //    cmd.Parameters.AddWithValue("@dispsno", RouteID);
                 //}
-                if (RouteID != "ALL")
-                {
-                    cmd = new MySqlCommand("select Route_id,IndentType from dispatch_sub where dispatch_sno=@dispsno");
-                    cmd.Parameters.AddWithValue("@dispsno", RouteID);
-                }
-                else
-                {
-                    cmd = new MySqlCommand("select Route_id,IndentType from dispatch_sub where dispatch_sno=@dispsno");
-                    cmd.Parameters.AddWithValue("@dispsno", BranchId);
-                }
-                DataTable dtrouteindenttype = vdm.SelectQuery(cmd).Tables[0];
-                foreach (DataRow drrouteitype in dtrouteindenttype.Rows)
-                {
-                    RouteID = drrouteitype["Route_id"].ToString();
-                    IndentType = drrouteitype["IndentType"].ToString();
-                }
-                if (RouteID == "A")
-                {
+                if (levelType == "Agent") {
                     cmd = new MySqlCommand("SELECT  ROUND(SUM(indents_subtable.unitQty), 2) AS QTY, indent.IndentType, productsdata.ProductName FROM (SELECT IndentNo, Branch_id, I_date, IndentType, Status FROM indents WHERE (I_date BETWEEN @d1 AND @d2) AND (Branch_id = @Branchid)) indent INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno GROUP BY productsdata.ProductName");
-                    //// cmd = new MySqlCommand("SELECT  SUM(indents_subtable.unitQty) AS QTY, indent.IndentType, modifiedroutesubtable.BranchID,productsdata.productname, products_subcategory.SubCatName, products_subcategory.sno FROM   modifiedroutes INNER JOIN  modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN  (SELECT  IndentNo, Branch_id, I_date, IndentType, Status FROM   indents WHERE  (I_date BETWEEN @d1 AND @d2)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN (SELECT  branch_sno, product_sno, Rank FROM  branchproducts WHERE   (branch_sno = @BranchID)) brnchprdt ON productsdata.sno = brnchprdt.product_sno WHERE   (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @d1)  AND (indent.Status <> 'D') AND (indent.IndentType = @itype) OR  (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate > @d1) AND (modifiedroutesubtable.CDate <= @d1) AND (indent.Status <> 'D') AND (indent.IndentType = @itype) GROUP BY products_subcategory.SubCatName, products_subcategory.sno,productsdata.productname ORDER BY brnchprdt.Rank, modifiedroutesubtable.Rank");
                     DateTime Currentdate = VehicleDBMgr.GetTime(vdm.conn);
                     cmd.Parameters.AddWithValue("@itype", IndentType);
-                    //cmd.Parameters.AddWithValue("@TripID", RouteID);
                     cmd.Parameters.AddWithValue("@d1", GetLowDate(date));
                     cmd.Parameters.AddWithValue("@d2", GetHighDate(date));
                     cmd.Parameters.AddWithValue("@BranchID", BranchId);
@@ -5306,43 +5288,75 @@
                 }
                 else
                 {
-
                     if (RouteID != "ALL")
                     {
-                        if (context.Session["IndentData"] == null)
-                        {
-                            ////cmd = new MySqlCommand("SELECT  SUM(indents_subtable.unitQty) AS QTY, indent.IndentType, modifiedroutesubtable.BranchID, products_subcategory.SubCatName, products_subcategory.sno FROM   modifiedroutes INNER JOIN  modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN  (SELECT  IndentNo, Branch_id, I_date, IndentType, Status FROM   indents WHERE  (I_date BETWEEN @d1 AND @d2)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN (SELECT  branch_sno, product_sno, Rank FROM  branchproducts WHERE   (branch_sno = @BranchID)) brnchprdt ON productsdata.sno = brnchprdt.product_sno WHERE  (modifiedroutes.Sno = @TripID) AND (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @d1)  AND (indent.Status <> 'D') AND (indent.IndentType = @itype) OR (modifiedroutes.Sno = @TripID) AND (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate > @d1) AND (modifiedroutesubtable.CDate <= @d1) AND (indent.Status <> 'D') AND (indent.IndentType = @itype) GROUP BY products_subcategory.SubCatName, products_subcategory.sno ORDER BY brnchprdt.Rank, modifiedroutesubtable.Rank");
-                            cmd = new MySqlCommand("SELECT SUM(indents_subtable.unitQty) AS QTY, indent.IndentType, modifiedroutesubtable.BranchID, productsdata.ProductName FROM modifiedroutes INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN (SELECT IndentNo, Branch_id, I_date, IndentType, Status FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE  (modifiedroutes.Sno = @TripID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @d1) AND (indent.Status <> 'D') AND (indent.IndentType = @itype) OR (modifiedroutes.Sno = @TripID) AND (modifiedroutesubtable.EDate > @d1) AND (modifiedroutesubtable.CDate <= @d1) AND (indent.Status <> 'D') AND  (indent.IndentType = @itype)  GROUP BY productsdata.ProductName ORDER BY modifiedroutesubtable.Rank");
-                            DateTime Currentdate = VehicleDBMgr.GetTime(vdm.conn);
-                            cmd.Parameters.AddWithValue("@itype", IndentType);
-                            cmd.Parameters.AddWithValue("@TripID", RouteID);
-                            cmd.Parameters.AddWithValue("@d1", GetLowDate(date));
-                            cmd.Parameters.AddWithValue("@d2", GetHighDate(date));
-                            cmd.Parameters.AddWithValue("@BranchID", BranchId);
-                            dtIndentData = vdm.SelectQuery(cmd).Tables[0];
-                        }
-                        else
-                        {
-                            context.Session["IndentData"] = dtIndentData;
-                        }
+                        cmd = new MySqlCommand("select Route_id,IndentType from dispatch_sub where dispatch_sno=@dispsno");
+                        cmd.Parameters.AddWithValue("@dispsno", RouteID);
                     }
-                    else if (RouteID == "ALL")
+                    else
                     {
-                        if (context.Session["IndentData"] == null)
+                        cmd = new MySqlCommand("select Route_id,IndentType from dispatch_sub where dispatch_sno=@dispsno");
+                        cmd.Parameters.AddWithValue("@dispsno", BranchId);
+                    }
+                    DataTable dtrouteindenttype = vdm.SelectQuery(cmd).Tables[0];
+                    foreach (DataRow drrouteitype in dtrouteindenttype.Rows)
+                    {
+                        RouteID = drrouteitype["Route_id"].ToString();
+                        IndentType = drrouteitype["IndentType"].ToString();
+                    }
+                    if (RouteID == "A")
+                    {
+                        /// Need to check this type by ravindra
+                        cmd = new MySqlCommand("SELECT  ROUND(SUM(indents_subtable.unitQty), 2) AS QTY, indent.IndentType, productsdata.ProductName FROM (SELECT IndentNo, Branch_id, I_date, IndentType, Status FROM indents WHERE (I_date BETWEEN @d1 AND @d2) AND (Branch_id = @Branchid)) indent INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno GROUP BY productsdata.ProductName");
+                        //// cmd = new MySqlCommand("SELECT  SUM(indents_subtable.unitQty) AS QTY, indent.IndentType, modifiedroutesubtable.BranchID,productsdata.productname, products_subcategory.SubCatName, products_subcategory.sno FROM   modifiedroutes INNER JOIN  modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN  (SELECT  IndentNo, Branch_id, I_date, IndentType, Status FROM   indents WHERE  (I_date BETWEEN @d1 AND @d2)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN (SELECT  branch_sno, product_sno, Rank FROM  branchproducts WHERE   (branch_sno = @BranchID)) brnchprdt ON productsdata.sno = brnchprdt.product_sno WHERE   (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @d1)  AND (indent.Status <> 'D') AND (indent.IndentType = @itype) OR  (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate > @d1) AND (modifiedroutesubtable.CDate <= @d1) AND (indent.Status <> 'D') AND (indent.IndentType = @itype) GROUP BY products_subcategory.SubCatName, products_subcategory.sno,productsdata.productname ORDER BY brnchprdt.Rank, modifiedroutesubtable.Rank");
+                        DateTime Currentdate = VehicleDBMgr.GetTime(vdm.conn);
+                        cmd.Parameters.AddWithValue("@itype", IndentType);
+                        //cmd.Parameters.AddWithValue("@TripID", RouteID);
+                        cmd.Parameters.AddWithValue("@d1", GetLowDate(date));
+                        cmd.Parameters.AddWithValue("@d2", GetHighDate(date));
+                        cmd.Parameters.AddWithValue("@BranchID", BranchId);
+                        dtIndentData = vdm.SelectQuery(cmd).Tables[0];
+                    }
+                    else
+                    {
+
+                        if (RouteID != "ALL")
                         {
-                            cmd = new MySqlCommand("SELECT  ROUND(SUM(indents_subtable.unitQty), 2) AS QTY, indent.IndentType, modifiedroutesubtable.BranchID, productsdata.ProductName FROM modifiedroutes INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN (SELECT IndentNo, Branch_id, I_date, IndentType, Status FROM  indents WHERE  (I_date BETWEEN @d1 AND @d2)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (modifiedroutes.BranchID = @BranchID) GROUP BY productsdata.ProductName, modifiedroutes.BranchID ORDER BY modifiedroutesubtable.Rank");
-                            //// cmd = new MySqlCommand("SELECT  SUM(indents_subtable.unitQty) AS QTY, indent.IndentType, modifiedroutesubtable.BranchID,productsdata.productname, products_subcategory.SubCatName, products_subcategory.sno FROM   modifiedroutes INNER JOIN  modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN  (SELECT  IndentNo, Branch_id, I_date, IndentType, Status FROM   indents WHERE  (I_date BETWEEN @d1 AND @d2)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN (SELECT  branch_sno, product_sno, Rank FROM  branchproducts WHERE   (branch_sno = @BranchID)) brnchprdt ON productsdata.sno = brnchprdt.product_sno WHERE   (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @d1)  AND (indent.Status <> 'D') AND (indent.IndentType = @itype) OR  (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate > @d1) AND (modifiedroutesubtable.CDate <= @d1) AND (indent.Status <> 'D') AND (indent.IndentType = @itype) GROUP BY products_subcategory.SubCatName, products_subcategory.sno,productsdata.productname ORDER BY brnchprdt.Rank, modifiedroutesubtable.Rank");
-                            DateTime Currentdate = VehicleDBMgr.GetTime(vdm.conn);
-                            cmd.Parameters.AddWithValue("@itype", IndentType);
-                            //cmd.Parameters.AddWithValue("@TripID", RouteID);
-                            cmd.Parameters.AddWithValue("@d1", GetLowDate(date));
-                            cmd.Parameters.AddWithValue("@d2", GetHighDate(date));
-                            cmd.Parameters.AddWithValue("@BranchID", BranchId);
-                            dtIndentData = vdm.SelectQuery(cmd).Tables[0];
+                            if (context.Session["IndentData"] == null)
+                            {
+                                ////cmd = new MySqlCommand("SELECT  SUM(indents_subtable.unitQty) AS QTY, indent.IndentType, modifiedroutesubtable.BranchID, products_subcategory.SubCatName, products_subcategory.sno FROM   modifiedroutes INNER JOIN  modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN  (SELECT  IndentNo, Branch_id, I_date, IndentType, Status FROM   indents WHERE  (I_date BETWEEN @d1 AND @d2)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN (SELECT  branch_sno, product_sno, Rank FROM  branchproducts WHERE   (branch_sno = @BranchID)) brnchprdt ON productsdata.sno = brnchprdt.product_sno WHERE  (modifiedroutes.Sno = @TripID) AND (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @d1)  AND (indent.Status <> 'D') AND (indent.IndentType = @itype) OR (modifiedroutes.Sno = @TripID) AND (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate > @d1) AND (modifiedroutesubtable.CDate <= @d1) AND (indent.Status <> 'D') AND (indent.IndentType = @itype) GROUP BY products_subcategory.SubCatName, products_subcategory.sno ORDER BY brnchprdt.Rank, modifiedroutesubtable.Rank");
+                                cmd = new MySqlCommand("SELECT SUM(indents_subtable.unitQty) AS QTY, indent.IndentType, modifiedroutesubtable.BranchID, productsdata.ProductName FROM modifiedroutes INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN (SELECT IndentNo, Branch_id, I_date, IndentType, Status FROM indents WHERE (I_date BETWEEN @d1 AND @d2)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE  (modifiedroutes.Sno = @TripID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @d1) AND (indent.Status <> 'D') AND (indent.IndentType = @itype) OR (modifiedroutes.Sno = @TripID) AND (modifiedroutesubtable.EDate > @d1) AND (modifiedroutesubtable.CDate <= @d1) AND (indent.Status <> 'D') AND  (indent.IndentType = @itype)  GROUP BY productsdata.ProductName ORDER BY modifiedroutesubtable.Rank");
+                                DateTime Currentdate = VehicleDBMgr.GetTime(vdm.conn);
+                                cmd.Parameters.AddWithValue("@itype", IndentType);
+                                cmd.Parameters.AddWithValue("@TripID", RouteID);
+                                cmd.Parameters.AddWithValue("@d1", GetLowDate(date));
+                                cmd.Parameters.AddWithValue("@d2", GetHighDate(date));
+                                cmd.Parameters.AddWithValue("@BranchID", BranchId);
+                                dtIndentData = vdm.SelectQuery(cmd).Tables[0];
+                            }
+                            else
+                            {
+                                context.Session["IndentData"] = dtIndentData;
+                            }
                         }
-                        else
+                        else if (RouteID == "ALL")
                         {
-                            context.Session["IndentData"] = dtIndentData;
+                            if (context.Session["IndentData"] == null)
+                            {
+                                cmd = new MySqlCommand("SELECT  ROUND(SUM(indents_subtable.unitQty), 2) AS QTY, indent.IndentType, modifiedroutesubtable.BranchID, productsdata.ProductName FROM modifiedroutes INNER JOIN modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN (SELECT IndentNo, Branch_id, I_date, IndentType, Status FROM  indents WHERE  (I_date BETWEEN @d1 AND @d2)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno WHERE (modifiedroutes.BranchID = @BranchID) GROUP BY productsdata.ProductName, modifiedroutes.BranchID ORDER BY modifiedroutesubtable.Rank");
+                                //// cmd = new MySqlCommand("SELECT  SUM(indents_subtable.unitQty) AS QTY, indent.IndentType, modifiedroutesubtable.BranchID,productsdata.productname, products_subcategory.SubCatName, products_subcategory.sno FROM   modifiedroutes INNER JOIN  modifiedroutesubtable ON modifiedroutes.Sno = modifiedroutesubtable.RefNo INNER JOIN branchdata ON modifiedroutesubtable.BranchID = branchdata.sno INNER JOIN  (SELECT  IndentNo, Branch_id, I_date, IndentType, Status FROM   indents WHERE  (I_date BETWEEN @d1 AND @d2)) indent ON branchdata.sno = indent.Branch_id INNER JOIN indents_subtable ON indent.IndentNo = indents_subtable.IndentNo INNER JOIN productsdata ON indents_subtable.Product_sno = productsdata.sno INNER JOIN products_subcategory ON productsdata.SubCat_sno = products_subcategory.sno INNER JOIN products_category ON products_subcategory.category_sno = products_category.sno INNER JOIN (SELECT  branch_sno, product_sno, Rank FROM  branchproducts WHERE   (branch_sno = @BranchID)) brnchprdt ON productsdata.sno = brnchprdt.product_sno WHERE   (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate IS NULL) AND (modifiedroutesubtable.CDate <= @d1)  AND (indent.Status <> 'D') AND (indent.IndentType = @itype) OR  (brnchprdt.branch_sno = @BranchID) AND (modifiedroutesubtable.EDate > @d1) AND (modifiedroutesubtable.CDate <= @d1) AND (indent.Status <> 'D') AND (indent.IndentType = @itype) GROUP BY products_subcategory.SubCatName, products_subcategory.sno,productsdata.productname ORDER BY brnchprdt.Rank, modifiedroutesubtable.Rank");
+                                DateTime Currentdate = VehicleDBMgr.GetTime(vdm.conn);
+                                cmd.Parameters.AddWithValue("@itype", IndentType);
+                                //cmd.Parameters.AddWithValue("@TripID", RouteID);
+                                cmd.Parameters.AddWithValue("@d1", GetLowDate(date));
+                                cmd.Parameters.AddWithValue("@d2", GetHighDate(date));
+                                cmd.Parameters.AddWithValue("@BranchID", BranchId);
+                                dtIndentData = vdm.SelectQuery(cmd).Tables[0];
+                            }
+                            else
+                            {
+                                context.Session["IndentData"] = dtIndentData;
+                            }
                         }
                     }
                 }
