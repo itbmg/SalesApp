@@ -939,7 +939,7 @@
             $('#mainform').css('display', 'block');
             $('#divclose').css('display', 'none');
             $('#divclose').css('display', 'none');
-            $('#divcontrols').css('display', 'block');
+            $('#divdisplay').css('display', 'block');
             $('#divFillScreen').css('display', 'none');
             $('#lblBranchname').css('display', 'none');
         }
@@ -991,7 +991,7 @@
         </div>
         <!-- table code-->
         <form role="form">
-        <div id="divcontrols" class="box-body" id="divdisplay">
+        <div  class="box-body" id="divdisplay">
         <div id="mainform">
             <div class="form-group" id="divroute">
                 <label>
@@ -1002,11 +1002,11 @@
             <div class="form-group">
                 <label for="exampleInputPassword1">
                     AgentName:</label>
-                <select id="ddlBranchName" class="form-control" name="Agent" class="form-control">
+                <select id="ddlBranchName" class="form-control" name="Agent" >
                 </select>
             </div>
             <div id="divOrders" style="text-align: center;">
-                <input type="button" value="Orders" id="btnorders" class="btn btn-primary" onclick=" return divOrdersclick();" />
+                <input type="button" value="Orders" id="btnorders" class="btn btn-primary" onclick="return divOrdersclick();" />
             </div>
             </div>
             <div>

@@ -2217,7 +2217,6 @@
                     }
                     else
                     {
-                        string Unitqty = "0"; string Desciption = "";
                         //GetProduct.UnitPrice =
                         //GetProduct.UnitPrice =
                         // GetProduct.UnitPrice =
@@ -2270,10 +2269,6 @@
                     }
                     else
                     {
-                        string Unitqty = "0"; string Desciption = "";
-                        //GetProduct.UnitPrice =
-                        //GetProduct.UnitPrice =
-                        // GetProduct.UnitPrice =
                         GetProduct.Desciption = "";
                         GetProduct.Unitqty = "";
                         ProductList.Add(GetProduct);
@@ -2352,7 +2347,6 @@
                     {
                         dtorders = (DataTable)context.Session["Orders"];
                     }
-                    DataRow[] drOrders;
                     string hdnIndentNo = obj.IndentNo;
                     cmd = new MySqlCommand("select IndentNo from Indents where Branch_id=@Branch_id AND (indents.I_date between @d1 AND  @d2) and (indents.IndentType = @IndentType)");
                     cmd.Parameters.AddWithValue("@Branch_id", BranchID);
@@ -2362,7 +2356,6 @@
                     DataTable dtIndent = vdm.SelectQuery(cmd).Tables[0];
                     string ProductName = "";
                     double TotalQty = 0;
-                    double OfferTotalQty = 0;
                     foreach (orderdetail o in obj.data)
                     {
                         if (o.Unitsqty != "0")
@@ -3717,7 +3710,7 @@
                 List<SalelDetails> SalelDetailslist1 = new List<SalelDetails>();
                 foreach (DataRow drsale in Report.Rows)
                 {
-                    float qty = 0; float lqty = 0; float rqty = 0; float sqty = 0; float dqty = 0;
+                    float lqty = 0; float rqty = 0; float sqty = 0; float dqty = 0;
                     float netqty = 0;
                     SalelDetails getsalevaluedetails = new SalelDetails();
                     float.TryParse(drsale["Deliverqty"].ToString(), out dqty);
@@ -4361,8 +4354,8 @@
                 {
                     //string weekid = es.week;
                     SqlCommand cmdd = new SqlCommand("SELECT  DATEADD(wk, DATEDIFF(wk, 6, CAST(RTRIM(@year * 10000 + 1 * 100 + 1) AS DATETIME)) + (@week - 1), 6) AS start_of_week, DATEADD(second, - 1, DATEADD(day, DATEDIFF(day, 0, DATEADD(wk, DATEDIFF(wk, 5, CAST(RTRIM(@year * 10000 + 1 * 100 + 1) AS DATETIME)) + (@week + - 1), 5)) + 1, 0)) AS end_of_week");
-                    cmdd.Parameters.Add("@year", year);
-                    cmdd.Parameters.Add("@week", i);
+                    cmdd.Parameters.AddWithValue("@year", year);
+                    cmdd.Parameters.AddWithValue("@week", i);
                     DataTable dtemp = dbm.SelectQuery(cmdd).Tables[0];
                     string fromdate = dtemp.Rows[0]["start_of_week"].ToString();//dr["start_of_week"].ToString();
                     string todate = dtemp.Rows[0]["end_of_week"].ToString();//dr["end_of_week"].ToString();
@@ -4420,8 +4413,8 @@
                 {
                     string weekid = es.week;
                     SqlCommand cmdd = new SqlCommand("SELECT  DATEADD(wk, DATEDIFF(wk, 6, CAST(RTRIM(@year * 10000 + 1 * 100 + 1) AS DATETIME)) + (@week - 1), 6) AS start_of_week, DATEADD(second, - 1, DATEADD(day, DATEDIFF(day, 0, DATEADD(wk, DATEDIFF(wk, 5, CAST(RTRIM(@year * 10000 + 1 * 100 + 1) AS DATETIME)) + (@week + - 1), 5)) + 1, 0)) AS end_of_week");
-                    cmdd.Parameters.Add("@year", year);
-                    cmdd.Parameters.Add("@week", weekid);
+                    cmdd.Parameters.AddWithValue("@year", year);
+                    cmdd.Parameters.AddWithValue("@week", weekid);
                     DataTable dtemp = dbm.SelectQuery(cmdd).Tables[0];
                     if (dtemp.Rows.Count > 0)
                     {
@@ -4541,7 +4534,7 @@
                 List<SalelDetails> SalelDetailslist1 = new List<SalelDetails>();
                 foreach (DataRow drsale in Report.Rows)
                 {
-                    float qty = 0; float lqty = 0; float rqty = 0; float sqty = 0; float dqty = 0;
+                    float lqty = 0; float rqty = 0; float sqty = 0; float dqty = 0;
                     float netqty = 0;
                     SalelDetails getsalevaluedetails = new SalelDetails();
                     float.TryParse(drsale["Deliverqty"].ToString(), out dqty);
@@ -4602,8 +4595,6 @@
                 string Todate = edt.ToString("yyyy-MM-dd");
                 DateTime Enddate = Convert.ToDateTime(Todate);
 
-                DateTime firstmonth = new DateTime();
-                DateTime lastmonth = new DateTime();
                 DataTable Report = new DataTable();
                 Report.Columns.Add("Branchid");
                 Report.Columns.Add("BranchName");
@@ -5361,7 +5352,6 @@
                     }
                 }
                 List<IndentClass> Indentlist = new List<IndentClass>();
-                string SubCatName = ""; string tempsubcatname = "";
                 if (dtIndentData.Rows.Count > 0)
                 {
                     foreach (DataRow dr in dtIndentData.Rows)
@@ -5593,7 +5583,7 @@
                     context.Response.Write(response);
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 string response = GetJson("Error");
                 context.Response.Write(response);
@@ -6077,7 +6067,7 @@
                 string response = GetJson(msg);
                 context.Response.Write(response);
             }
-            catch (Exception ex)
+            catch 
             {
                 string response = GetJson("Error");
                 context.Response.Write(response);
@@ -6100,7 +6090,6 @@
             {
                 vdm = new VehicleDBMgr();
                 DataTable dtlekageData = new DataTable();
-                string RouteID = "";
                 string Date = context.Request["Date"];
                 // RouteID = context.Request["RouteID"];
                 string Branchid = context.Request["Branchid"].ToString();
@@ -6286,8 +6275,6 @@
                 string leveltype = context.Session["LevelType"].ToString();
                 DataTable dtbalqty = new DataTable();
                 DataTable dtbalinv = new DataTable();
-                string totalinvqty = "";
-                string balanceamount = "";
                 List<DcNumbers> getbalnaceitemslist = new List<DcNumbers>();
                 DataTable Report = new DataTable();
                 Report.Columns.Add("");
@@ -6570,8 +6557,6 @@
                     Report.Columns.Add("Decrease");
                     Report.Columns.Add("Decrease %");
                     Report.Columns.Add("Decrease Remarks");
-                    double fromqty = 0;
-                    double toqty = 0;
                     double increseqty = 0;
                     double decreseeqty = 0;
                     cmd = new MySqlCommand("SELECT branchaccounts.BranchId, branchaccounts.Amount, branchaccounts.FineAmount, branchaccounts.Dtripid, branchaccounts.Ctripid, branchaccounts.SaleValue,branchmappingtable.SuperBranch FROM branchaccounts INNER JOIN branchmappingtable ON branchaccounts.BranchId = branchmappingtable.SubBranch WHERE (branchmappingtable.SuperBranch = @BranchID)");
@@ -6584,14 +6569,8 @@
                     DataTable dtsalesType = vdm.SelectQuery(cmd).Tables[0];
                     double totfromqty = 0;
                     double tottoqty = 0;
-                    double totamount = 0;
-                    double totcrates = 0;
-                    double grandtotamount = 0;
-                    double grandtotcrates = 0;
                     double totincreseqty = 0;
                     double totdecreseeqty = 0;
-                    double grandtotfromqty = 0;
-                    double grandtottoqty = 0;
                     if (dtsalesType.Rows.Count > 0)
                     {
                         int i = 1;
@@ -7118,7 +7097,6 @@
                             string AvgMileage = "";
                             double avgSaleQty = 0;
                             int count = 0;
-                            string status = "";
                             foreach (DataRow dr in dtReport.Rows)
                             {
                                 string unitQty = dr["unitQty"].ToString();
@@ -7260,7 +7238,6 @@
                         Report.Columns.Add("SNo");
                         Report.Columns.Add("Date");
                         Report.Columns.Add("Qty");
-                        int N = 0;
                         int i = 1;
                         if (months != 0)
                         {
@@ -7298,7 +7275,6 @@
                         Report.Columns.Add("SNo");
                         Report.Columns.Add("Date");
                         Report.Columns.Add("Qty");
-                        int N = 0;
                         int i = 1;
                         if (months != 0)
                         {
@@ -7332,7 +7308,6 @@
                         Report.Columns.Add("SNo");
                         Report.Columns.Add("Date");
                         Report.Columns.Add("Qty");
-                        int N = 0;
                         int i = 1;
                         if (months != 0)
                         {
@@ -7369,7 +7344,6 @@
                         List<string> Datelist = new List<string>();
                         List<string> Statuslist = new List<string>();
                         List<string> ActMillist = new List<string>();
-                        string MainQty = "";
                         string DelQty = "";
                         string IndDate = "";
                         string AvgMileage = "";
@@ -7786,7 +7760,6 @@
                         List<string> Datelist = new List<string>();
                         List<string> Statuslist = new List<string>();
                         List<string> ActMillist = new List<string>();
-                        string MainQty = "";
                         string DelQty = "";
                         string IndDate = "";
                         string AvgMileage = "";
@@ -7967,7 +7940,6 @@
                         Report.Columns.Add("SNo");
                         Report.Columns.Add("Date");
                         Report.Columns.Add("Qty");
-                        int N = 0;
                         int i = 1;
                         if (months != 0)
                         {
