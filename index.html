@@ -84,95 +84,88 @@
         <div class="menu-btn">
             &#9776; Menu</div>
        <!-- table code-->
-      <table>
-                <tr>
-                    <td>
-                        <div style="font-weight: bold; width: 80%;
-                            text-align: center;">
-                            <img src="images/indent.png" class="img-circle" alt=""  
-                                 onclick="inwardclick();" />
-                            <label>
-                                Indent
-                            </label>
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-weight: bold; width: 80%;
-                            text-align: center;">
-                            <img src="images/salesicon.png" class="img-circle" alt=""  
-                                 onclick="issueclick();" /><br />
-                            <label>
-                                Sales
-                            </label>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td style="padding-left:10px;">
-                        <div style="font-weight: bold; width: 80%;
-                            text-align: center;">
-                            <img src="images/DC.png" class="img-circle" alt=""  
-                                 onclick="BranchTransferClick();" />
-                            <label>
-                                DC Report
-                            </label>
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-weight: bold; width: 80%;
-                            text-align: center;">
-                            <img src="images/rupe.png" class="img-circle" alt=""   onclick="StoresRetunClick();" />
-                            <label>
-                                Balance Report
-                            </label>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <div style="font-weight: bold; width: 80%;
-                            text-align: center;">
-                            <img src="images/approval3.png" class="img-circle" alt=""   onclick="PurchaseApproval();" />
-                            <label>
-                                Lekages
-                            </label>
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-weight: bold; width: 80%;
-                            text-align: center;">
-                            <img src="images/Inventory.png" class="img-circle" alt=""   onclick="purchaseorderclick();" />
-                            <label>
-                                Inventory
-                            </label>
-                        </div>
-                    </td>
-                </tr>
-
-                <tr>
-                    <td>
-                        <div style="font-weight: bold; width: 80%;
-                            text-align: center;">
-                            <img src="images/approval3.png" class="img-circle" alt=""   onclick="PurchaseApproval();" />
-                            <label>
-                                Cash Book
-                            </label>
-                        </div>
-                    </td>
-                    <td>
-                        <div style="font-weight: bold; width: 80%;
-                            text-align: center;">
-                            <img src="images/po2.png" class="img-circle" alt=""   onclick="purchaseorderclick();" />
-                            <label>
-                                Approval Voucher
-                            </label>
-                        </div>
-                    </td>
-                </tr>
-            </table>
-    </div>
+        <table>
+            <tr>
+                <td style="width: 32%;">
+                    <div style="font-weight: bold; width: 99%; text-align: center;">
+                        <img src="images/indent.png" class="imgborder" alt="" height="120px" width="120px"
+                             onclick="hIndentclick();" />
+                        <label>
+                            Indent
+                        </label>
+                    </div>
+                </td>
+                <td style="width: 32%;">
+                    <div style="font-weight: bold; width: 98%; text-align: center;">
+                        <img src="images/salesicon.png" class="imgborder" alt="" height="120px" width="120px"
+                             onclick="hSalesclick();" /><br />
+                        <label>
+                            Sales
+                        </label>
+                    </div>
+                </td>
+                <td style="width: 32%;">
+                    <div style="font-weight: bold; width: 97%; text-align: center;">
+                        <img src="images/DC.png" class="imgborder" alt="" height="120px" width="120px" onclick="hdcclick();" /><br />
+                        <label>
+                            DC Report
+                        </label>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 20px;"></tr>
+            <tr>
+                <td style="width: 32%;">
+                    <div style="font-weight: bold; width: 99%; text-align: center;">
+                        <img src="images/receipt2.png" class="imgborder" alt="" height="120px" width="120px"
+                             onclick="hbalanceclick();" />
+                        <label>
+                            Closing Stock Report
+                        </label>
+                    </div>
+                </td>
+                <td style="width: 32%;">
+                    <div style="font-weight: bold; width: 98%; text-align: center;">
+                        <img src="images/leaks_icon.png" class="img-circle" alt="" height="130px" width="120px"
+                             onclick="hlekageclick();" /><br />
+                        <label>
+                            Lekages
+                        </label>
+                    </div>
+                </td>
+                <td style="width: 32%;">
+                    <div style="font-weight: bold; width: 97%; text-align: center;">
+                        <img src="images/creat.png" class="imgborder" alt="" height="120px" width="120px"
+                             onclick="hcratesclick();" /><br />
+                        <label>
+                            Inventory
+                        </label>
+                    </div>
+                </td>
+            </tr>
+            <tr style="height: 20px;"></tr>
+            <tr>
+                <td style="width: 32%;">
+                    <div style="font-weight: bold; width: 99%; text-align: center;">
+                        <img src="images/cashbook.png" class="imgborder" alt="" height="120px" width="120px"
+                             onclick="hcashclick();" />
+                        <label>
+                            Cash Book
+                        </label>
+                    </div>
+                </td>
+                <td id="tdapprove" style="width: 32%;">
+                    <div style="font-weight: bold; width: 98%; text-align: center;">
+                        <img src="images/order.png" class="imgborder" alt="" height="120px" width="120px"
+                             onclick="happrovalvoucherclick();" /><br />
+                        <label>
+                            Approval Vocher
+                        </label>
+                    </div>
+                </td>
+            </tr>
+        </table>
+</div>
     <!-- Pushy JS -->
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
     <script src="js/pushy.min.js"></script>
